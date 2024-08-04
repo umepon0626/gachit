@@ -9,3 +9,5 @@
 #   generate-hashes: false
 
 -e file:.
+click==8.1.7
+    # via gachit

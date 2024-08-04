@@ -1,0 +1,2 @@
+class EntiryError(Exception):
+    pass

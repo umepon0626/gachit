@@ -12,3 +12,4 @@ repos:
         args: [--ignore-missing-imports, --strict]
         additional_dependencies:
           - click>=8.1.6
+          - pytest>=8.3.2

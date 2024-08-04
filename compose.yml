@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  test_env:
+    build:
+      context: .
+    volumes:
+      - ./src:/workspace/src
+      - ./.gitignore:/workspace/.gitignore
+      - ./.python-version:/workspace/.python-version
+      - ./pyproject.toml:/workspace/pyproject.toml
+      - ./README.md:/workspace/README.md
+      - ./requirements.lock:/workspace/requirements.lock
+      - ./requirements-dev.lock:/workspace/requirements-dev.lock
+    command: bash -c "rye sync --no-lock && rye run pytest"
+    environment:
+      - IS_TEST_ENV=1
+      - GIT_USER_NAME="test user"
+      - GIT_USER_EMAIL="test@gmail.com"

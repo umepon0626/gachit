@@ -33,6 +33,7 @@ suppress-dummy-args = true
 managed = true
 dev-dependencies = [
     "ruff>=0.5.6",
+    "pre-commit>=3.8.0",
 ]
 
 [tool.hatch.metadata]

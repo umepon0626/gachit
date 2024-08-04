@@ -9,3 +9,4 @@
 #   generate-hashes: false
 
 -e file:.
+ruff==0.5.6

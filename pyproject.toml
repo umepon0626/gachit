@@ -15,13 +15,13 @@ build-backend = "hatchling.build"
 
 [tool.ruff]
 fix = true
-line-length = 120
+line-length = 88
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "I"]
+select = ["E4", "E7", "E9", "E501", "F", "I"]
 
 
 [tool.ruff.lint.flake8-annotations]

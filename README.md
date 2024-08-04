@@ -19,3 +19,11 @@ rye sync
 2. `cat *.pack | git unpack-objects`
 
 3. `rm *.pack`
+
+# 動作確認方法
+
+```sh
+./.venv/bin/activate
+rye sync
+gachit
+```

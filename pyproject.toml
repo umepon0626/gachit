@@ -54,6 +54,9 @@ dev-dependencies = [
     "pytest>=8.3.2",
 ]
 
+[tool.rye.scripts]
+check = "pre-commit run --all-files"
+
 [tool.hatch.metadata]
 allow-direct-references = true
 

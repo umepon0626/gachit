@@ -9,7 +9,7 @@ RUN \
   && apt-get install -y --no-install-recommends build-essential curl git
 
 WORKDIR /workspace
-ENV PYTHONPATH="/workspace:$PYTHONPATH"
+ENV PYTHONPATH="/workspace/src:$PYTHONPATH"
 ENV RYE_HOME="/workspace/.rye"
 ENV PATH="${RYE_HOME}/shims:${PATH}"
 

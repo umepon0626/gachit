@@ -12,7 +12,7 @@ services:
       - ./README.md:/workspace/README.md
       - ./requirements.lock:/workspace/requirements.lock
       - ./requirements-dev.lock:/workspace/requirements-dev.lock
-    command: bash -c ". .venv/bin/activate && rye sync --no-lock && rye run pytest"
+    command: bash -c ". .venv/bin/activate && rye sync --no-lock && rye run pytest -sv"
     environment:
       - IS_TEST_ENV=1
       - GIT_USER_NAME="test user"

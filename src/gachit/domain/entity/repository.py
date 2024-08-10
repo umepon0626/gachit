@@ -1,6 +1,8 @@
 from pathlib import Path
 
-from gachit.exception import EntiryError
+
+class RepositoryNotFoundError(Exception):
+    pass
 
 
 class Repository:
@@ -18,6 +20,6 @@ class Repository:
 
         parent = path.parent
         if parent == path:
-            raise EntiryError("Not a git repository")
+            raise RepositoryNotFoundError("Not a git repository")
 
         return self.__get_repository_root(parent)

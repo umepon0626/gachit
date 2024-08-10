@@ -1,0 +1,2 @@
+class UnknownObjectTypeError(Exception):
+    pass

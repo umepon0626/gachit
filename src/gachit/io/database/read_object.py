@@ -1,12 +1,13 @@
 import zlib
 from pathlib import Path
 
-from gachit.domain.entity import Blob
+from gachit.domain.entity import Blob, Tree
+from gachit.io.database.tree import deserialize_tree
 
 from .error import InvalidObjectFormatError, InvalidObjectTypeError
 
-GitObjectTypes = Blob
-GitObjectFormats = {Blob: Blob.format}
+GitObjectTypes = Blob | Tree
+GitObjectFormats = {Blob: Blob.format, Tree: Tree.format}
 
 
 def read_object(
@@ -31,7 +32,9 @@ def read_object(
         )
 
     match object_format:
-        case "blob":
+        case Blob.format:
             return Blob(raw[null_byte_end + 1 :])
+        case Tree.format:
+            return deserialize_tree(raw[null_byte_end + 1 :])
         case _:
             raise InvalidObjectTypeError(f"Unknown object type: {object_format}")

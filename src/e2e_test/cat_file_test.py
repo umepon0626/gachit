@@ -1,9 +1,11 @@
+from gachit.domain.entity import Blob, Tree, TreeEntryMode
 from gachit.usecase import cat_file_use_case
 
 
 def test_cat_blob() -> None:
     blob_sha = "00949da686b4111be68db672a34979fd58187663"
     blob = cat_file_use_case(sha_str=blob_sha)
+    assert isinstance(blob, Blob)
 
     assert blob.data == (
         b"import click\n\n\n@click.group()"
@@ -11,3 +13,14 @@ def test_cat_blob() -> None:
         + b'\ndef status() -> int:\n    click.echo("status")\n   '
         b" return 0"
     )
+
+
+def test_cat_tree() -> None:
+    tree_sha = "09a03838e0a1e227a94697f06860606af2c3aab2"
+    tree = cat_file_use_case(sha_str=tree_sha)
+
+    assert isinstance(tree, Tree)
+
+    assert len(tree.entries) == 2
+    for entry in tree.entries:
+        assert entry.mode == TreeEntryMode.FILE

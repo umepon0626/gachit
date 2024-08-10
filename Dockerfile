@@ -34,3 +34,7 @@ ENV IS_TESTING_ENVIRONMENT=1
 
 COPY ./.git ./.git
 
+RUN mv .git/objects/pack/*.pack . && \
+  cat *.pack | git unpack-objects && \
+  rm *.pack
+

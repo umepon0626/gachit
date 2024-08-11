@@ -1,4 +1,4 @@
-from gachit.domain.entity import Blob, Tree, TreeEntryMode
+from gachit.domain.entity import Blob, Commit, Tree, TreeEntryMode
 from gachit.usecase import cat_file_use_case
 
 
@@ -24,3 +24,11 @@ def test_cat_tree() -> None:
     assert len(tree.entries) == 2
     for entry in tree.entries:
         assert entry.mode == TreeEntryMode.FILE
+
+
+def test_cat_commit() -> None:
+    tree_sha = "26172c045a573cd677da66845344484e0d900a9a"
+    commit = cat_file_use_case(sha_str=tree_sha)
+
+    assert isinstance(commit, Commit)
+    assert commit.message == "Initial commit"

@@ -1,13 +1,14 @@
 import zlib
 from pathlib import Path
 
-from gachit.domain.entity import Blob, Tree
+from gachit.domain.entity import Blob, Commit, Tree
+from gachit.io.database.commit import deserialize_commit
 from gachit.io.database.tree import deserialize_tree
 
 from .error import InvalidObjectFormatError, InvalidObjectTypeError
 
-GitObjectTypes = Blob | Tree
-GitObjectFormats = {Blob: Blob.format, Tree: Tree.format}
+GitObjectTypes = Blob | Tree | Commit
+GitObjectFormats = {Blob: Blob.format, Tree: Tree.format, Commit: Commit.format}
 
 
 def read_object(
@@ -36,5 +37,7 @@ def read_object(
             return Blob(raw[null_byte_end + 1 :])
         case Tree.format:
             return deserialize_tree(raw[null_byte_end + 1 :])
+        case Commit.format:
+            return deserialize_commit(raw[null_byte_end + 1 :])
         case _:
             raise InvalidObjectTypeError(f"Unknown object type: {object_format}")

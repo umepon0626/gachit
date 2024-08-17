@@ -9,10 +9,21 @@ RUN \
   && apt-get install -y --no-install-recommends build-essential curl git
 
 WORKDIR /workspace
-ENV PYTHONPATH="/workspace/src:$PYTHONPATH"
+ENV PYTHONPATH="/workspace/gachit/src:$PYTHONPATH"
 ENV RYE_HOME="/workspace/.rye"
 ENV PATH="${RYE_HOME}/shims:${PATH}"
 
+
+# 動作検証用のディレクトリの作成
+RUN git clone https://github.com/umepon0626/gachit_practice.git playground
+WORKDIR /workspace/playground
+RUN mv .git/objects/pack/*.pack . && \
+  cat *.pack | git unpack-objects && \
+  rm *.pack
+WORKDIR /workspace
+
+RUN mkdir -p /workspace/gachit
+WORKDIR /workspace/gachit
 # RYE_INSTALL_OPTIONはビルドに必要です。
 # 参照: https://github.com/mitsuhiko/rye/issues/246
 RUN curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
@@ -28,13 +39,4 @@ RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
 
 RUN . .venv/bin/activate
 
-FROM rye AS test
-
 ENV IS_TESTING_ENVIRONMENT=1
-
-COPY ./.git ./.git
-
-RUN mv .git/objects/pack/*.pack . && \
-  cat *.pack | git unpack-objects && \
-  rm *.pack
-

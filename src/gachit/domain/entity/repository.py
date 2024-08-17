@@ -1,8 +1,6 @@
 from pathlib import Path
 
-
-class RepositoryNotFoundError(Exception):
-    pass
+from .error import RepositoryNotFoundError
 
 
 class Repository:

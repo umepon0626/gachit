@@ -1,6 +1,7 @@
 from .blob import Blob
 from .commit import Commit
 from .error import UnknownObjectTypeError
+from .index import Index, IndexEntry
 from .repository import Repository
 from .sha import Sha
 from .tree import Tree, TreeEntry, TreeEntryMode
@@ -16,4 +17,6 @@ __all__ = [
     "TreeEntryMode",
     "User",
     "Commit",
+    "Index",
+    "IndexEntry",
 ]

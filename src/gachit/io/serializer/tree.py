@@ -2,8 +2,8 @@ from gachit.domain.entity import Sha, Tree, TreeEntry, TreeEntryMode
 
 
 class TreeSerializer:
-    @classmethod
-    def deserialize(cls: type, data: bytes) -> Tree:
+    @staticmethod
+    def deserialize(data: bytes) -> Tree:
         """Deserialize tree object from bytes data.
 
         Args:
@@ -20,8 +20,8 @@ class TreeSerializer:
             tree_entries.append(leaf)
         return Tree(tree_entries)
 
-    @classmethod
-    def serialize(cls: type, tree: Tree) -> bytes:
+    @staticmethod
+    def serialize(tree: Tree) -> bytes:
         ret = b""
         for entry in sorted(tree.entries, key=tree_leaf_sort_key):
             ret += (

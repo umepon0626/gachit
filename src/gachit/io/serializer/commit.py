@@ -2,8 +2,8 @@ from gachit.domain.entity import Commit, Sha, User
 
 
 class CommitSerializer:
-    @classmethod
-    def serialize(cls, commit: Commit) -> bytes:
+    @staticmethod
+    def serialize(commit: Commit) -> bytes:
         data = f"tree {commit.tree}\n"
         for parent in commit.parents:
             data += f"parent {parent}\n"
@@ -12,8 +12,8 @@ class CommitSerializer:
         data += f"\n{commit.message}"
         return data.encode("ascii")
 
-    @classmethod
-    def deserialize(cls, data: bytes) -> Commit:
+    @staticmethod
+    def deserialize(data: bytes) -> Commit:
         lines = data.decode("ascii").splitlines()
         parents: list[Sha] = []
         tree: Sha | None = None

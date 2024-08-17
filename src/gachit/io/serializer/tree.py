@@ -37,6 +37,7 @@ class TreeSerializer:
 def tree_leaf_sort_key(entry: TreeEntry) -> str:
     if entry.mode == TreeEntryMode.FILE or entry.mode == TreeEntryMode.EXECUTABLE:
         return entry.name
+    # TODO: @umepon0626: describe why we need to add "/".
     return entry.name + "/"
 
 

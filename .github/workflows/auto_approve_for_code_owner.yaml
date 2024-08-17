@@ -3,11 +3,12 @@ name: Auto-approve for Code Owners
 on:
   pull_request:
     types: [opened]
-  workflow_dispatch:
 
 jobs:
   auto-approve:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Auto approve PRs from code owners
         if: github.actor == 'umepon0626'

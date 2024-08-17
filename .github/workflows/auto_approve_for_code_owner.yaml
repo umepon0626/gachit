@@ -1,0 +1,15 @@
+name: Auto-approve for Code Owners
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto approve PRs from code owners
+        if: github.actor == 'codeowner-username'
+        uses: hmarr/auto-approve-action@v2.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

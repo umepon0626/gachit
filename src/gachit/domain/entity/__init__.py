@@ -4,7 +4,7 @@ from .error import UnknownObjectTypeError
 from .index import Index, IndexEntry
 from .repository import Repository
 from .sha import Sha
-from .tree import Tree, TreeEntry, TreeEntryMode
+from .tree import Mode, Tree, TreeLeaf
 from .user import User
 
 __all__ = [
@@ -13,8 +13,8 @@ __all__ = [
     "Repository",
     "UnknownObjectTypeError",
     "Tree",
-    "TreeEntry",
-    "TreeEntryMode",
+    "TreeLeaf",
+    "Mode",
     "User",
     "Commit",
     "Index",

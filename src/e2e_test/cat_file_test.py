@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from gachit.domain.entity import Blob, Commit, Tree, TreeEntryMode
+from gachit.domain.entity import Blob, Commit, Mode, Tree, TreeLeaf
 from gachit.usecase import cat_file_use_case
 
 playground_path = Path("/workspace/playground")
@@ -22,7 +22,8 @@ def test_cat_tree() -> None:
 
     assert len(tree.entries) == 1
     for entry in tree.entries:
-        assert entry.mode == TreeEntryMode.FILE
+        assert isinstance(entry, TreeLeaf)
+        assert entry.mode == Mode.FILE
 
 
 def test_cat_commit() -> None:

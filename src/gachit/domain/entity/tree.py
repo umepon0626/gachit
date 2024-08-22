@@ -1,17 +1,9 @@
 from dataclasses import dataclass, field
-from enum import StrEnum
 from pathlib import Path
 from typing import ClassVar, Union
 
+from .mode import Mode
 from .sha import Sha
-
-
-class Mode(StrEnum):
-    FILE = "100644"
-    EXECUTABLE = "100755"
-    DIRECTORY = "040000"
-    SYMLINK = "120000"
-    SUBMODULE = "160000"
 
 
 @dataclass

@@ -59,7 +59,6 @@ class TreeSerializer:
                 raise ValueError(f"Unknown entry type: {type(entry)}")
             ret += (
                 mode.value.encode("ascii")
-                + b" "
                 + name.encode("ascii")
                 + b"\x00"
                 + (int(sha.value, 16)).to_bytes(20, byteorder="big")

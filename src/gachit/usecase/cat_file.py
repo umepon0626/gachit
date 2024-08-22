@@ -15,7 +15,7 @@ def cat_file_use_case(
     if header.object_type == Blob:
         return BlobSerializer.deserialize(body)
     elif header.object_type == Tree:
-        return TreeSerializer.deserialize(body)
+        return TreeSerializer.deserialize(body, db)
     elif header.object_type == Commit:
         return CommitSerializer.deserialize(body)
     else:

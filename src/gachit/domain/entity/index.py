@@ -43,8 +43,7 @@ class Index:
     """Index
 
     Args:
-        entries (dict[Path, IndexEntry]): Index
-        entries by relative path to workspace root.
+        entries (list[IndexEntry]): Index entries.
         version (int): Version, defaults to 2
     """
 

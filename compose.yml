@@ -12,7 +12,7 @@ services:
       - ./README.md:/workspace/gachit/README.md
       - ./requirements.lock:/workspace/gachit/requirements.lock
       - ./requirements-dev.lock:/workspace/gachit/requirements-dev.lock
-    command: bash -c ". .venv/bin/activate && rye sync --no-lock && rye run pytest -sv --doctest-modules"
+    command: bash -c ". .venv/bin/activate && rye sync --no-lock && rye run pytest -svv --doctest-modules"
     environment:
       - IS_TEST_ENV=1
       - GIT_USER_NAME="test user"

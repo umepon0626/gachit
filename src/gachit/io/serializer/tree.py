@@ -59,6 +59,7 @@ class TreeSerializer:
                 raise ValueError(f"Unknown entry type: {type(entry)}")
             ret += (
                 mode.value.encode("ascii")
+                + b" "
                 + name.encode("ascii")
                 + b"\x00"
                 + (int(sha.value, 16)).to_bytes(20, byteorder="big")
@@ -87,6 +88,6 @@ def parse_one_tree(data: bytes, pos: int) -> tuple[TreeLeafData, int]:
     mode_end = data.find(b" ", pos)
     mode = Mode(data[pos:mode_end].decode("ascii"))
     name_end = data.find(b"\x00", mode_end)
-    name = data[mode_end:name_end].decode("ascii")
+    name = data[mode_end + 1 : name_end].decode("ascii")
     sha = Sha(data[name_end + 1 : name_end + 21].hex())
     return TreeLeafData(mode, name, sha), name_end + 21

@@ -3,6 +3,7 @@ from .commit import Commit
 from .error import UnknownObjectTypeError
 from .index import Index, IndexEntry
 from .mode import Mode
+from .ref import Ref
 from .repository import Repository
 from .sha import Sha
 from .tree import Tree, TreeLeaf
@@ -20,4 +21,5 @@ __all__ = [
     "Commit",
     "Index",
     "IndexEntry",
+    "Ref",
 ]

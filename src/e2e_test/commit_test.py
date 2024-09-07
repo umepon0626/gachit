@@ -19,4 +19,6 @@ def test_commit() -> None:
     repo.git.add(str(p))
     commit_use_case("add test.txt", repository_root_dir=playground_path)
 
-    # assert repo.head.commit.tree["test.txt"].data_stream.read() == b"test\n"
+    repo.index.commit("add test.txt")
+
+    assert repo.head.commit.tree["test.txt"].data_stream.read() == b"test\n"

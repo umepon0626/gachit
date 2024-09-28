@@ -49,7 +49,7 @@ class TreeSerializer:
                 header = ObjectHeader(Tree, len(data_body))
                 written_data = header.value + data_body
                 sha = Sha(hashlib.sha1(written_data).hexdigest())
-                name = entry.directory.name
+                name = entry.path.name
 
             elif isinstance(entry, TreeLeaf):
                 mode = Mode(entry.mode)
@@ -72,7 +72,7 @@ def tree_leaf_sort_key(entry: TreeLeaf | Tree) -> str:
         return str(entry.path)
     # We have to distinguish directories from files.
     # We can do this by adding a slash to the end of the directory name.
-    return str(entry.directory) + "/"
+    return str(entry.path) + "/"
 
 
 def parse_one_tree(data: bytes, pos: int) -> tuple[TreeLeafData, int]:

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from gachit.domain.entity import Mode, Sha, Tree, TreeLeaf
-from gachit.domain.service.diff import TreeDiffService
+from gachit.domain.service.diff.tree_to_tree import TreeDiffService
 
 
 def test_tree_diff() -> None:
@@ -71,7 +71,10 @@ def test_tree_diff() -> None:
     after.add_entry(readme)
     after.add_entry(after_license)
     after.add_entry(test_py)
-    tree_diff_service = TreeDiffService()
+    tree_diff_service = TreeDiffService(
+        Sha("683db051e198700f73438e30ce503b774bb7ce2d"),
+        Sha("683db051e198700f73438e30ce503b774bb7ce2d"),
+    )
     tree_diff_service.compare_trees(before, after)
     assert tree_diff_service.diff.blob_diffs[Path("hoge/LICENSE.md")].before == Sha(
         "32bb9315c35a92995d0a5dbc2dd6179616202c0c"

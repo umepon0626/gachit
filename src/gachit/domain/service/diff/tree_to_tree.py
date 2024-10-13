@@ -1,9 +1,11 @@
-from gachit.domain.entity import BlobDiff, Tree, TreeDiff, TreeLeaf
+from gachit.domain.entity import BlobDiff, Sha, Tree, TreeDiff, TreeLeaf
 
 
 class TreeDiffService:
-    def __init__(self) -> None:
-        self.diff = TreeDiff()
+    def __init__(self, before_tree_sha: Sha, after_tree_sha: Sha) -> None:
+        self.diff = TreeDiff(before_tree_sha, after_tree_sha)
+        # TODO: compare_treesで使うtreeとコンストラクタで使うshaの一貫性が自動で
+        # 保証されるようにする
 
     def compare_trees(self, before: Tree | None, after: Tree | None) -> None:
         before_entries = before.entries if before else []

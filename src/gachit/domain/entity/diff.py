@@ -1,7 +1,16 @@
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 
 from .sha import Sha
+
+
+class DiffType(Enum):
+    ADDED = "added"
+    DELETED = "deleted"
+    MODIFIED = "modified"
+    UNTRACKED = "untracked"
+    NO_CHANGE = "no_change"
 
 
 @dataclass
@@ -20,6 +29,8 @@ class BlobDiff:
 
 @dataclass
 class TreeDiff:
+    before: Sha
+    after: Sha
     blob_diffs: dict[Path, BlobDiff] = field(default_factory=dict)
     # path to BlobDiff
 

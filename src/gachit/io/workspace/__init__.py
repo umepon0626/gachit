@@ -30,6 +30,20 @@ class Workspace:
         with open(file_path, "rb") as f:
             return f.read()
 
+    def delete_file(self, file_path: Path) -> None:
+        if not file_path.exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
+        if file_path.is_dir():
+            raise IsADirectoryError(f"Is a directory: {file_path}")
+        file_path.unlink()
+
+    def write_file(self, file_path: Path, data: bytes, exist_ok: bool = False) -> None:
+        if not exist_ok and file_path.exists():
+            raise FileExistsError(f"File exists: {file_path}")
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, "wb") as f:
+            f.write(data)
+
     def create_index_entry(self, file_path: Path, blob_sha: Sha) -> IndexEntry:
         """create index entry with file path and blob sha
 

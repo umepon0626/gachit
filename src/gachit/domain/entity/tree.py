@@ -70,3 +70,26 @@ class Tree:
             self.entries.append(tree)
         else:
             raise ValueError(f"Invalid path: {entry.path}")
+
+    def find_entry(self, path: Path) -> Union[TreeLeaf, None]:
+        """Find entry by path
+
+        Args:
+            path (Path): Path to find
+
+        Returns:
+            Union[TreeLeaf, None]: Found entry or None
+        """
+        relative_path = path.relative_to(self.path)
+        if len(relative_path.parts) == 1:
+            for entry in self.entries:
+                if isinstance(entry, TreeLeaf) and entry.path == path:
+                    return entry
+        elif len(relative_path.parts) > 1:
+            for entry in self.entries:
+                if (
+                    isinstance(entry, self.__class__)
+                    and entry.path.name == relative_path.parts[0]
+                ):
+                    return entry.find_entry(path)
+        return None

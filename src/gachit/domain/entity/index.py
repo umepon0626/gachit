@@ -49,3 +49,17 @@ class Index:
 
     entries: list[IndexEntry]
     version: int = 2
+
+    def remove_entry(self, path: str) -> None:
+        """Remove entry by path
+
+        Args:
+            path (str): relative file path string to workspace root
+        """
+        self.entries = [e for e in self.entries if e.path != path]
+
+    def find_entry(self, path: str) -> IndexEntry | None:
+        for e in self.entries:
+            if e.path == path:
+                return e
+        return None

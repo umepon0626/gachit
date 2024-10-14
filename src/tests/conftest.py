@@ -10,6 +10,7 @@ playground_path = Path("/workspace/playground")
 
 
 def pytest_configure() -> None:
+    print("pytest_configure is called")
     is_test_env = os.environ.get("IS_TEST_ENV", 0)
     if is_test_env != "1":
         raise ValueError("This is not test environment")
@@ -23,41 +24,34 @@ def pytest_configure() -> None:
         cw.set_value("user", "email", user_email)
 
 
-def clean_up_after_each_tests() -> None:
-    # .gitフォルダを削除
-    shutil.rmtree(playground_path / ".git")
+def delete_escaped_playground() -> None:
+    # 退避していたplaygroundを削除
+    shutil.rmtree(playground_path.parent / "playground_escaped")
 
 
-def clean_up_after_all_tests() -> None:
-    # .gitファイルを元の場所に戻す
+def escape_playground() -> None:
+    # playgroundを退避
     shutil.copytree(
-        playground_path / "test/.git", playground_path / ".git", dirs_exist_ok=True
+        playground_path,
+        playground_path.parent / "playground_escaped",
+        dirs_exist_ok=True,
     )
 
 
-def setup_before_all_tests() -> None:
-    # .gitファイルを別の場所にコピー
-    shutil.copytree(
-        playground_path / ".git", playground_path / "test/.git", dirs_exist_ok=True
-    )
-
-
-def setup_before_each_tests() -> None:
-    # .gitファイルをもとに戻す
-    shutil.copytree(
-        playground_path / "test/.git", playground_path / ".git", dirs_exist_ok=True
-    )
+def recover_playground_from_escaped() -> None:
+    # 退避していたplaygroundをもとに戻す
+    shutil.rmtree(playground_path)
+    shutil.copytree(playground_path.parent / "playground_escaped", playground_path)
 
 
 @pytest.fixture(scope="session", autouse=True)
-def secure_original_git_folder() -> Generator[None, None, None]:
-    setup_before_all_tests()
+def secure_playground() -> Generator[None, None, None]:
+    escape_playground()
     yield
-    clean_up_after_all_tests()
+    delete_escaped_playground()
 
 
 @pytest.fixture(scope="function", autouse=True)
-def reset_git_folder() -> Generator[None, None, None]:
-    setup_before_each_tests()
+def reset_playground() -> Generator[None, None, None]:
+    recover_playground_from_escaped()
     yield
-    clean_up_after_each_tests()

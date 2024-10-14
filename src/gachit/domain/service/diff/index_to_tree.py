@@ -11,7 +11,7 @@ class IndexToTreeDiffService:
 
     def check_one(self, full_path: Path) -> DiffType | None:
         tree_leaf = self.tree.find_entry(full_path)
-        index_entry = self.index.find_entry(str(full_path))
+        index_entry = self.index.find_entry(str(full_path.relative_to(self.tree.path)))
         if tree_leaf is None and index_entry is None:
             return None
 

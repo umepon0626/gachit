@@ -30,18 +30,18 @@ class MigrationService:
         self.index = self.index_io.read()
 
     def check_conflicts(self) -> None:
-        tree_sha = self.diff.after
-        header, tree_content = self.database.read_object(tree_sha)
+        before_tree_sha = self.diff.before
+        header, tree_content = self.database.read_object(before_tree_sha)
         if header.object_type != Tree:
             raise ValueError(f"Expected tree, got {header}")
-        tree = TreeSerializer.deserialize(tree_content, self.database)
+        before_tree = TreeSerializer.deserialize(tree_content, self.database)
 
         index = self.index_io.read()
 
         workspace_to_index_diff_service = WorkspaceToIndexDiffService(
             self.workspace, index
         )
-        index_to_tree_diff_service = IndexToTreeDiffService(index, tree)
+        index_to_tree_diff_service = IndexToTreeDiffService(index, before_tree)
 
         for path in self.diff.blob_diffs.keys():
             conflict_between_workspace_and_index = (

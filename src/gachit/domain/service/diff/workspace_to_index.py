@@ -13,7 +13,9 @@ class WorkspaceToIndexDiffService:
         self.index = index
 
     def check_one(self, full_path: Path) -> DiffType | None:
-        index_entry = self.index.find_entry(str(full_path))
+        index_entry = self.index.find_entry(
+            str(full_path.relative_to(self.workspace.root_dir))
+        )
         try:
             data = self.workspace.read_file(full_path)
             blob = BlobSerializer.deserialize(data)

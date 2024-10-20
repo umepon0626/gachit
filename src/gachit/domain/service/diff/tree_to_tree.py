@@ -4,16 +4,11 @@ from gachit.domain.entity import BlobDiff, Tree, TreeDiff, TreeLeaf
 class TreeDiffService:
     def __init__(self, before: Tree, after: Tree) -> None:
         self.diff = TreeDiff(before, after)
-        # TODO: compare_treesで使うtreeとコンストラクタで使うshaの一貫性が自動で
-        # 保証されるようにする
 
     def compare(self) -> None:
-        before_entries = self.diff.before.entries if self.diff.before else []
-        after_entries = self.diff.after.entries if self.diff.after else []
-        self.collect_deleted_entries(before_entries, after_entries)
-        self.collect_added_entries(before_entries, after_entries)
+        self.__compare_tree(self.diff.before, self.diff.after)
 
-    def compare_trees(self, before: Tree, after: Tree) -> None:
+    def __compare_tree(self, before: Tree, after: Tree) -> None:
         self.collect_deleted_entries(before.entries, after.entries)
         self.collect_added_entries(before.entries, after.entries)
 
@@ -35,7 +30,7 @@ class TreeDiffService:
                 if isinstance(before_entry, Tree) and isinstance(
                     same_after_entry, Tree
                 ):
-                    self.compare_trees(before_entry, same_after_entry)
+                    self.__compare_tree(before_entry, same_after_entry)
 
                 elif isinstance(before_entry, TreeLeaf) and isinstance(
                     same_after_entry, TreeLeaf
@@ -71,7 +66,7 @@ class TreeDiffService:
                 if isinstance(after_entry, Tree) and isinstance(
                     same_before_entry, Tree
                 ):
-                    self.compare_trees(same_before_entry, after_entry)
+                    self.__compare_tree(same_before_entry, after_entry)
                 elif isinstance(after_entry, TreeLeaf) and isinstance(
                     same_before_entry, TreeLeaf
                 ):

@@ -30,13 +30,12 @@ class MigrationService:
         self.index = self.index_io.read()
 
     def check_conflicts(self) -> None:
-        before_tree = self.diff.before
         index = self.index_io.read()
 
         workspace_to_index_diff_service = WorkspaceToIndexDiffService(
             self.workspace, index
         )
-        index_to_tree_diff_service = IndexToTreeDiffService(index, before_tree)
+        index_to_tree_diff_service = IndexToTreeDiffService(index, self.diff.before)
 
         for path in self.diff.blob_diffs.keys():
             conflict_between_workspace_and_index = (

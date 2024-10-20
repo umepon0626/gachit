@@ -33,8 +33,8 @@ def checkout_use_case(branch_name: str, repository_root_dir: Path = Path(".")) -
     target_tree = get_commit_tree(db, target_commit_ref.sha)
 
     tree_diff_service = TreeDiffService(current_tree, target_tree)
+    tree_diff_service.compare()
 
-    tree_diff_service.compare_trees(current_tree, target_tree)
     migration_service = MigrationService(tree_diff_service.diff, repo=repo)
     migration_service.migrate()
 

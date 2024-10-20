@@ -72,7 +72,7 @@ def test_tree_diff() -> None:
     after.add_entry(after_license)
     after.add_entry(test_py)
     tree_diff_service = TreeDiffService(before, after)
-    tree_diff_service.compare_trees(before, after)
+    tree_diff_service.compare()
     assert tree_diff_service.diff.blob_diffs[Path("hoge/LICENSE.md")].before == Sha(
         "32bb9315c35a92995d0a5dbc2dd6179616202c0c"
     )

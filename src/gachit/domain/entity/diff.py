@@ -3,6 +3,7 @@ from enum import Enum
 from pathlib import Path
 
 from .sha import Sha
+from .tree import Tree
 
 
 class DiffType(Enum):
@@ -29,8 +30,8 @@ class BlobDiff:
 
 @dataclass
 class TreeDiff:
-    before: Sha
-    after: Sha
+    before: Tree
+    after: Tree
     blob_diffs: dict[Path, BlobDiff] = field(default_factory=dict)
     # path to BlobDiff
 

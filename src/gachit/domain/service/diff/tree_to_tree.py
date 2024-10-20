@@ -1,17 +1,16 @@
-from gachit.domain.entity import BlobDiff, Sha, Tree, TreeDiff, TreeLeaf
+from gachit.domain.entity import BlobDiff, Tree, TreeDiff, TreeLeaf
 
 
 class TreeDiffService:
-    def __init__(self, before_tree_sha: Sha, after_tree_sha: Sha) -> None:
-        self.diff = TreeDiff(before_tree_sha, after_tree_sha)
-        # TODO: compare_treesで使うtreeとコンストラクタで使うshaの一貫性が自動で
-        # 保証されるようにする
+    def __init__(self, before: Tree, after: Tree) -> None:
+        self.diff = TreeDiff(before, after)
 
-    def compare_trees(self, before: Tree | None, after: Tree | None) -> None:
-        before_entries = before.entries if before else []
-        after_entries = after.entries if after else []
-        self.collect_deleted_entries(before_entries, after_entries)
-        self.collect_added_entries(before_entries, after_entries)
+    def compare(self) -> None:
+        self.__compare_tree(self.diff.before, self.diff.after)
+
+    def __compare_tree(self, before: Tree, after: Tree) -> None:
+        self.collect_deleted_entries(before.entries, after.entries)
+        self.collect_added_entries(before.entries, after.entries)
 
     def collect_deleted_entries(
         self,
@@ -31,7 +30,7 @@ class TreeDiffService:
                 if isinstance(before_entry, Tree) and isinstance(
                     same_after_entry, Tree
                 ):
-                    self.compare_trees(before_entry, same_after_entry)
+                    self.__compare_tree(before_entry, same_after_entry)
 
                 elif isinstance(before_entry, TreeLeaf) and isinstance(
                     same_after_entry, TreeLeaf
@@ -67,7 +66,7 @@ class TreeDiffService:
                 if isinstance(after_entry, Tree) and isinstance(
                     same_before_entry, Tree
                 ):
-                    self.compare_trees(same_before_entry, after_entry)
+                    self.__compare_tree(same_before_entry, after_entry)
                 elif isinstance(after_entry, TreeLeaf) and isinstance(
                     same_before_entry, TreeLeaf
                 ):

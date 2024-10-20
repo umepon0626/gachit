@@ -5,7 +5,7 @@ class InvalidShaError(Exception):
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Sha:
     value: str
 

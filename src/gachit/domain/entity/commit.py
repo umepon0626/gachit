@@ -6,7 +6,7 @@ from .sha import Sha
 from .user import User
 
 
-@dataclass
+@dataclass(frozen=True)
 class Commit:
     """Commit
 

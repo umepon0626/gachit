@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from gachit.domain.entity import Blob, Repository, Tree, TreeDiff
+from gachit.domain.entity import Blob, Repository, TreeDiff
 from gachit.domain.entity.diff import DiffType
 from gachit.domain.service.diff import (
     IndexToTreeDiffService,
@@ -8,7 +8,7 @@ from gachit.domain.service.diff import (
 )
 from gachit.io.database import DataBase
 from gachit.io.index import IndexIO
-from gachit.io.serializer import BlobSerializer, TreeSerializer
+from gachit.io.serializer import BlobSerializer
 from gachit.io.workspace import Workspace
 
 
@@ -30,12 +30,7 @@ class MigrationService:
         self.index = self.index_io.read()
 
     def check_conflicts(self) -> None:
-        before_tree_sha = self.diff.before
-        header, tree_content = self.database.read_object(before_tree_sha)
-        if header.object_type != Tree:
-            raise ValueError(f"Expected tree, got {header}")
-        before_tree = TreeSerializer.deserialize(tree_content, self.database)
-
+        before_tree = self.diff.before
         index = self.index_io.read()
 
         workspace_to_index_diff_service = WorkspaceToIndexDiffService(

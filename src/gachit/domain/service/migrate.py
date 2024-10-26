@@ -53,7 +53,10 @@ class MigrationService:
                 conflict_between_index_and_tree
                 and conflict_between_index_and_tree != DiffType.NO_CHANGE
             ):
-                raise ConflictError(f"Conflict between index and tree: {path}")
+                raise ConflictError(
+                    f"Conflict ({conflict_between_index_and_tree}) "
+                    "between index and tree: {path}"
+                )
 
     def update_workspace(self) -> None:
         for path, blob_diff in self.diff.blob_diffs.items():

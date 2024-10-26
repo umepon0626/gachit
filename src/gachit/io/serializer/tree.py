@@ -32,7 +32,7 @@ class TreeSerializer:
             if leaf.mode == Mode.DIRECTORY:
                 _, sub_tree_body = db.read_object(leaf.sha)
                 sub_tree = TreeSerializer.deserialize(sub_tree_body, db)
-                root_tree.entries.append(sub_tree)
+                root_tree.entries[leaf.name] = sub_tree
             else:
                 root_tree.add_entry(
                     TreeLeaf(leaf.mode, db.git_dir.parent / leaf.name, leaf.sha)
@@ -42,7 +42,7 @@ class TreeSerializer:
     @staticmethod
     def serialize(tree: Tree) -> bytes:
         ret = b""
-        for entry in sorted(tree.entries, key=tree_leaf_sort_key):
+        for entry in sorted(tree.entries.values(), key=tree_leaf_sort_key):
             if isinstance(entry, Tree):
                 mode = Mode.DIRECTORY
                 data_body = TreeSerializer.serialize(entry)

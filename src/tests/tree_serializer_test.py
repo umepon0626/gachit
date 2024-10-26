@@ -12,13 +12,13 @@ def test_tree_serializer() -> None:
     repo = Repository(repository_root_dir=playground_path)
     db = DataBase(repo.git_dir)
     sha = Sha(tree_sha)
-    header, body = db.read_object(sha)
+    _, body = db.read_object(sha)
 
     tree = TreeSerializer.deserialize(body, db)
     assert isinstance(tree, Tree)
 
     assert len(tree.entries) == 2
-    for entry in tree.entries:
+    for entry in tree.entries.values():
         assert isinstance(entry, TreeLeaf)
         assert entry.mode == Mode.FILE
 

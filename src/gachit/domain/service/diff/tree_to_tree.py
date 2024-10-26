@@ -9,21 +9,12 @@ class TreeDiffService:
         self.__compare_tree(self.diff.before, self.diff.after)
 
     def __compare_tree(self, before: Tree, after: Tree) -> None:
-        self.collect_deleted_entries(before.entries, after.entries)
-        self.collect_added_entries(before.entries, after.entries)
+        self.collect_deleted_entries(before, after)
+        self.collect_added_entries(before, after)
 
-    def collect_deleted_entries(
-        self,
-        before_entries: list[Tree | TreeLeaf],
-        after_entries: list[Tree | TreeLeaf],
-    ) -> None:
-        for before_entry in before_entries:
-            same_after_entry = None
-            for after_entry in after_entries:
-                if before_entry.path == after_entry.path:
-                    same_after_entry = after_entry
-                    break
-
+    def collect_deleted_entries(self, before: Tree, after: Tree) -> None:
+        for name, before_entry in before.entries.items():
+            same_after_entry = after.entries.get(name, None)
             if same_after_entry is None:
                 self.add_entry(before_entry, is_deleted=True)
             else:
@@ -48,17 +39,9 @@ class TreeDiffService:
                     # In this case, we have to add before_entry as a deleted entry
                     # and after entry as an added entry.
 
-    def collect_added_entries(
-        self,
-        before_entries: list[Tree | TreeLeaf],
-        after_entries: list[Tree | TreeLeaf],
-    ) -> None:
-        for after_entry in after_entries:
-            same_before_entry = None
-            for before_entry in before_entries:
-                if before_entry.path == after_entry.path:
-                    same_before_entry = before_entry
-                    break
+    def collect_added_entries(self, before: Tree, after: Tree) -> None:
+        for name, after_entry in after.entries.items():
+            same_before_entry = before.entries.get(name, None)
 
             if same_before_entry is None:
                 self.add_entry(after_entry, is_deleted=False)
@@ -83,7 +66,7 @@ class TreeDiffService:
 
     def add_entry(self, entry: Tree | TreeLeaf, is_deleted: bool) -> None:
         if isinstance(entry, Tree):
-            for child in entry.entries:
+            for child in entry.entries.values():
                 if isinstance(child, Tree):
                     self.add_entry(child, is_deleted=is_deleted)
                 else:

@@ -21,7 +21,7 @@ def test_cat_tree() -> None:
     assert isinstance(tree, Tree)
 
     assert len(tree.entries) == 1
-    for entry in tree.entries:
+    for entry in tree.entries.values():
         assert isinstance(entry, TreeLeaf)
         assert entry.mode == Mode.FILE
 

@@ -62,12 +62,12 @@ def test_tree_diff() -> None:
         Sha("683db051e198700f73438e30ce503b774bb7ce2d"),
     )
 
-    before = Tree(root_directory, [])
+    before = Tree(root_directory)
     before.add_entry(readme)
     before.add_entry(before_license)
     before.add_entry(main_py)
 
-    after = Tree(root_directory, [])
+    after = Tree(root_directory)
     after.add_entry(readme)
     after.add_entry(after_license)
     after.add_entry(test_py)

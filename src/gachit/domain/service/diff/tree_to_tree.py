@@ -4,6 +4,8 @@ from gachit.domain.entity import BlobDiff, Tree, TreeDiff, TreeLeaf
 class TreeDiffService:
     def __init__(self, before: Tree, after: Tree) -> None:
         self.diff = TreeDiff(before, after)
+        assert before.path == after.path
+        self.root_dir = before.path
 
     def compare(self) -> None:
         self.__compare_tree(self.diff.before, self.diff.after)

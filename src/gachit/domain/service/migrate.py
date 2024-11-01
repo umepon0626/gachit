@@ -55,7 +55,7 @@ class MigrationService:
             ):
                 raise ConflictError(
                     f"Conflict ({conflict_between_index_and_tree}) "
-                    "between index and tree: {path}"
+                    f"between index and tree: {path}"
                 )
 
     def update_workspace(self) -> None:

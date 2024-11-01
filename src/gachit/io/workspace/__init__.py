@@ -22,7 +22,8 @@ class Workspace:
 
         return self.__get_workspace_root(parent)
 
-    def read_file(self, file_path: Path) -> bytes:
+    def read_file(self, path: Path) -> bytes:
+        file_path = self.root_dir / path
         if not file_path.exists():
             raise FileNotFoundError(f"File not found: {file_path}")
         if file_path.is_dir():
@@ -30,27 +31,30 @@ class Workspace:
         with open(file_path, "rb") as f:
             return f.read()
 
-    def delete_file(self, file_path: Path) -> None:
+    def delete_file(self, path: Path) -> None:
+        file_path = self.root_dir / path
         if not file_path.exists():
             raise FileNotFoundError(f"File not found: {file_path}")
         if file_path.is_dir():
             raise IsADirectoryError(f"Is a directory: {file_path}")
         file_path.unlink()
 
-    def write_file(self, file_path: Path, data: bytes, exist_ok: bool = False) -> None:
+    def write_file(self, path: Path, data: bytes, exist_ok: bool = False) -> None:
+        file_path = self.root_dir / path
         if not exist_ok and file_path.exists():
             raise FileExistsError(f"File exists: {file_path}")
         file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(file_path, "wb") as f:
             f.write(data)
 
-    def create_index_entry(self, file_path: Path, blob_sha: Sha) -> IndexEntry:
+    def create_index_entry(self, path: Path, blob_sha: Sha) -> IndexEntry:
         """create index entry with file path and blob sha
 
         Args:
             file_path (Path): path of file
             blob_sha (Sha): sha of blob
         """
+        file_path = self.root_dir / path
         if not file_path.exists():
             raise FileNotFoundError(f"File not found: {file_path}")
         relative_path = file_path.relative_to(self.root_dir, walk_up=True)

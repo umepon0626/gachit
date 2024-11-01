@@ -1,5 +1,6 @@
 import hashlib
 from dataclasses import dataclass
+from pathlib import Path
 
 from gachit.domain.entity import Mode, Sha, Tree, TreeLeaf
 from gachit.io.database import DataBase
@@ -26,7 +27,7 @@ class TreeSerializer:
         """
         pos = 0
         length = len(data)
-        root_tree = Tree(db.git_dir.parent)
+        root_tree = Tree(Path("."))
         while pos < length:
             leaf, pos = parse_one_tree(data, pos)
             if leaf.mode == Mode.DIRECTORY:
@@ -34,9 +35,7 @@ class TreeSerializer:
                 sub_tree = TreeSerializer.deserialize(sub_tree_body, db)
                 root_tree.entries[leaf.name] = sub_tree
             else:
-                root_tree.add_entry(
-                    TreeLeaf(leaf.mode, db.git_dir.parent / leaf.name, leaf.sha)
-                )
+                root_tree.add_entry(TreeLeaf(leaf.mode, Path(leaf.name), leaf.sha))
         return root_tree
 
     @staticmethod

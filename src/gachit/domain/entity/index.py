@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 from .sha import Sha
 
@@ -35,7 +36,7 @@ class IndexEntry:
     sha: Sha
     flag_assume_valid: bool
     flag_stage: bool
-    path: str
+    path: Path
 
 
 @dataclass
@@ -50,7 +51,7 @@ class Index:
     entries: list[IndexEntry]
     version: int = 2
 
-    def remove_entry(self, path: str) -> None:
+    def remove_entry(self, path: Path) -> None:
         """Remove entry by path
 
         Args:
@@ -58,7 +59,7 @@ class Index:
         """
         self.entries = [e for e in self.entries if e.path != path]
 
-    def find_entry(self, path: str) -> IndexEntry | None:
+    def find_entry(self, path: Path) -> IndexEntry | None:
         for e in self.entries:
             if e.path == path:
                 return e

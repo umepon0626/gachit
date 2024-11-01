@@ -73,7 +73,7 @@ class MigrationService:
     def update_index(self) -> None:
         for path, blob_diff in self.diff.blob_diffs.items():
             if blob_diff.after is None:
-                self.index.remove_entry(str(path))
+                self.index.remove_entry(path)
             else:
                 index_entry = self.workspace.create_index_entry(path, blob_diff.after)
                 self.index.entries.append(index_entry)

@@ -1,5 +1,6 @@
 import math
 from hashlib import sha1
+from pathlib import Path
 
 from gachit.domain.entity import Index, IndexEntry, Sha
 
@@ -19,7 +20,7 @@ class IndexSerializer:
         entries: list[IndexEntry] = []
         content = data[12:]
         idx = 0
-        for i in range(count):
+        for _ in range(count):
             ctime_s = int.from_bytes(content[idx : idx + 4])
             ctime_ns = int.from_bytes(content[idx + 4 : idx + 8])
 
@@ -97,7 +98,7 @@ class IndexSerializer:
                     sha=sha,
                     flag_assume_valid=bool(flag_assume_valid),
                     flag_stage=bool(flag_stage),
-                    path=name,
+                    path=Path(name),
                 )
             )
         return Index(version=version, entries=entries)

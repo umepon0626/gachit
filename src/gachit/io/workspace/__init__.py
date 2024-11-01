@@ -76,6 +76,6 @@ class Workspace:
             sha=blob_sha,
             flag_assume_valid=False,
             flag_stage=False,
-            path=str(relative_path),
+            path=relative_path,
         )
         return entry

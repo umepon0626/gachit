@@ -1,16 +1,8 @@
 import hashlib
-from dataclasses import dataclass
 from pathlib import Path
 
 from gachit.domain.entity import Mode, Sha, Tree, TreeLeaf
 from gachit.io.database import DataBase, ObjectHeader
-
-
-@dataclass
-class TreeLeafData:
-    mode: Mode
-    name: str
-    sha: Sha
 
 
 class TreeSerializer:
@@ -32,9 +24,9 @@ class TreeSerializer:
             if leaf.mode == Mode.DIRECTORY:
                 _, sub_tree_body = db.read_object(leaf.sha)
                 sub_tree = TreeSerializer.deserialize(sub_tree_body, db)
-                root_tree.entries[leaf.name] = sub_tree
+                root_tree.entries[leaf.path.name] = sub_tree
             else:
-                root_tree.add_entry(TreeLeaf(leaf.mode, Path(leaf.name), leaf.sha))
+                root_tree.add_entry(leaf)
         return root_tree
 
     @staticmethod
@@ -73,7 +65,7 @@ def tree_leaf_sort_key(entry: TreeLeaf | Tree) -> str:
     return str(entry.path) + "/"
 
 
-def parse_one_tree(data: bytes, pos: int) -> tuple[TreeLeafData, int]:
+def parse_one_tree(data: bytes, pos: int) -> tuple[TreeLeaf, int]:
     """Parse one tree entry from data.
 
     Args:
@@ -88,4 +80,4 @@ def parse_one_tree(data: bytes, pos: int) -> tuple[TreeLeafData, int]:
     name_end = data.find(b"\x00", mode_end)
     name = data[mode_end + 1 : name_end].decode("ascii")
     sha = Sha(data[name_end + 1 : name_end + 21].hex())
-    return TreeLeafData(mode, name, sha), name_end + 21
+    return TreeLeaf(mode, Path(name), sha), name_end + 21

@@ -43,7 +43,7 @@ class Tree:
     """
 
     format: ClassVar[str] = "tree"
-    path: Path
+    path: Path = field(default=Path("."))
     entries: dict[str, Union[TreeLeaf, "Tree"]] = field(default_factory=dict)
 
     def add_entry(self, entry: TreeLeaf) -> None:

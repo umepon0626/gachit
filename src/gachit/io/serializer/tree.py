@@ -27,7 +27,7 @@ class TreeSerializer:
         """
         pos = 0
         length = len(data)
-        root_tree = Tree(Path("."))
+        root_tree = Tree()
         while pos < length:
             leaf, pos = parse_one_tree(data, pos)
             if leaf.mode == Mode.DIRECTORY:

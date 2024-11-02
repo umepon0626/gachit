@@ -55,10 +55,12 @@ dev-dependencies = [
     "types-click>=7.1.8",
     "gitpython>=3.1.43",
     "pytest>=8.3.2",
+    "vulture>=2.13",
 ]
 
 [tool.rye.scripts]
 check = "pre-commit run --all-files"
+find-dead = "vulture . --exclude .venv/"
 inflate = ['python3', '-c', 'import zlib; print(zlib.decompress(open(0, "rb").read()))']
 
 [tool.hatch.metadata]

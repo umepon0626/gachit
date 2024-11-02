@@ -2,8 +2,7 @@ from pathlib import Path
 
 from gachit.domain.entity import Blob, Repository
 from gachit.domain.service import hash_object_service
-from gachit.io.database import DataBase
-from gachit.io.database.object_header import ObjectHeader
+from gachit.io.database import DataBase, ObjectHeader
 from gachit.io.index import IndexIO
 from gachit.io.serializer import BlobSerializer
 from gachit.io.workspace import Workspace

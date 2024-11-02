@@ -4,8 +4,7 @@ from pathlib import Path
 
 from gachit.domain.entity import Commit, Ref, Repository, Sha, Tree
 from gachit.domain.service import build_tree_from_index
-from gachit.io.database import DataBase
-from gachit.io.database.object_header import ObjectHeader
+from gachit.io.database import DataBase, ObjectHeader
 from gachit.io.index import IndexIO
 from gachit.io.ref import BranchIO, HeadIO
 from gachit.io.serializer import CommitSerializer, TreeSerializer

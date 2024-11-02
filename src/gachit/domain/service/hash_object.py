@@ -1,7 +1,7 @@
 import hashlib
 
 from gachit.domain.entity import Blob, Sha, Tree
-from gachit.io.database.object_header import ObjectHeader
+from gachit.io.database import ObjectHeader
 from gachit.io.serializer import BlobSerializer, TreeSerializer
 
 

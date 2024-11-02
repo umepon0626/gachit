@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from gachit.domain.entity import Index, Tree
-from gachit.domain.entity.diff import DiffType
+from gachit.domain.entity import DiffType, Index, Tree
 
 
 class IndexToTreeDiffService:

@@ -18,3 +18,6 @@ class DataBase:
         self, header: ObjectHeader, data: bytes, sha: Sha, exist_ok: bool = True
     ) -> None:
         return write_object(header, data, sha, self.git_dir / "objects", exist_ok)
+
+
+__all__ = ["ObjectHeader", "DataBase"]

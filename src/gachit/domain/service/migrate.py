@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-from gachit.domain.entity import Blob, Repository, TreeDiff
-from gachit.domain.entity.diff import DiffType
+from gachit.domain.entity import Blob, DiffType, Repository, TreeDiff
 from gachit.domain.service.diff import (
     IndexToTreeDiffService,
     WorkspaceToIndexDiffService,

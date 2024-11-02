@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from gachit.domain.entity import Index
-from gachit.domain.entity.diff import DiffType
+from gachit.domain.entity import DiffType, Index
 from gachit.domain.service.hash_object import hash_object_service
 from gachit.io.serializer import BlobSerializer
 from gachit.io.workspace import Workspace

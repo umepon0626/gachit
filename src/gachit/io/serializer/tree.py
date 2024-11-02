@@ -3,8 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from gachit.domain.entity import Mode, Sha, Tree, TreeLeaf
-from gachit.io.database import DataBase
-from gachit.io.database.object_header import ObjectHeader
+from gachit.io.database import DataBase, ObjectHeader
 
 
 @dataclass

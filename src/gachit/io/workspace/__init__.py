@@ -1,8 +1,6 @@
 from pathlib import Path
 
-from gachit.domain.entity.index import IndexEntry
-from gachit.domain.entity.repository import RepositoryNotFoundError
-from gachit.domain.entity.sha import Sha
+from gachit.domain.entity import IndexEntry, RepositoryNotFoundError, Sha
 
 
 class Workspace:

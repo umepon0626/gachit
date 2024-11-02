@@ -1,7 +1,6 @@
 from .blob import Blob
 from .commit import Commit
 from .diff import BlobDiff, TreeDiff
-from .error import UnknownObjectTypeError
 from .index import Index, IndexEntry
 from .mode import Mode
 from .ref import Ref
@@ -14,7 +13,6 @@ __all__ = [
     "Blob",
     "Sha",
     "Repository",
-    "UnknownObjectTypeError",
     "Tree",
     "TreeLeaf",
     "Mode",

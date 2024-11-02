@@ -33,9 +33,7 @@ class Tree:
     """Tree
 
     Args:
-        path (Path | None): Directory path. If the tree is for the root,
-        it should be None.
-
+        path (Path): Directory path.
         entries (list[TreeLeaf | Tree]): Entries
 
     Raises:

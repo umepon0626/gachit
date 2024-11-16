@@ -1,13 +1,12 @@
 from dataclasses import dataclass
 
-from gachit.domain.entity import Blob, DiffType, Repository, TreeDiff
+from gachit.domain.entity import DiffType, Repository, TreeDiff
 from gachit.domain.service.diff import (
     IndexToTreeDiffService,
     WorkspaceToIndexDiffService,
 )
-from gachit.io.database import DataBase
+from gachit.io.database.blob import BlobIO
 from gachit.io.index import IndexIO
-from gachit.io.serializer import BlobSerializer
 from gachit.io.workspace import Workspace
 
 
@@ -24,7 +23,7 @@ class MigrationService:
 
     def __post_init__(self) -> None:
         self.workspace = Workspace(self.repo.git_dir.parent)
-        self.database = DataBase(self.repo.git_dir)
+        self.blob_io = BlobIO(self.repo.git_dir)
         self.index_io = IndexIO(self.repo.git_dir)
         self.index = self.index_io.read()
 
@@ -62,11 +61,8 @@ class MigrationService:
             if blob_diff.after is None:
                 self.workspace.delete_file(path)
             else:
-                header, data = self.database.read_object(blob_diff.after)
-                if header.object_type != Blob:
-                    self.rollback_workspace()
-                    print(f"Expected blob, got {header}. Rollback applied.")
-                updated_file_content = BlobSerializer.deserialize(data).data
+                blob = self.blob_io.get(blob_diff.after)
+                updated_file_content = blob.data
                 self.workspace.write_file(path, updated_file_content, exist_ok=True)
 
     def update_index(self) -> None:
@@ -83,10 +79,8 @@ class MigrationService:
             if blob_diff.before is None:
                 self.workspace.delete_file(path)
             else:
-                header, data = self.database.read_object(blob_diff.before)
-                if header.object_type != Blob:
-                    continue
-                original_file_content = BlobSerializer.deserialize(data).data
+                blob = self.blob_io.get(blob_diff.before)
+                original_file_content = blob.data
                 self.workspace.write_file(path, original_file_content, exist_ok=True)
 
     def migrate(self) -> None:

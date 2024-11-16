@@ -27,7 +27,7 @@ class IndexEntry:
     ctime: tuple[int, int]
     mtime: tuple[int, int]
     dev: int
-    ino: int
+    inode: int
     mode_type: int
     mode_perms: int
     uid: int

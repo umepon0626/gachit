@@ -65,7 +65,7 @@ class Workspace:
             ctime=(ctime_s, ctime_ns),
             mtime=(mtime_s, mtime_ns),
             dev=stat.st_dev,
-            ino=stat.st_ino,
+            inode=stat.st_ino,
             mode_type=0b1000,
             mode_perms=0o644,
             uid=stat.st_uid,

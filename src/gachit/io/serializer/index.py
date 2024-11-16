@@ -28,11 +28,10 @@ class IndexSerializer:
             mtime_ns = int.from_bytes(content[idx + 12 : idx + 16])
 
             dev = int.from_bytes(content[idx + 16 : idx + 20], "big")
-            # Inode
-            ino = int.from_bytes(content[idx + 20 : idx + 24], "big")
+            inode = int.from_bytes(content[idx + 20 : idx + 24], "big")
             # Ignored.
             unused = int.from_bytes(content[idx + 24 : idx + 26], "big")
-            assert 0 == unused
+            assert unused == 0
             mode = int.from_bytes(content[idx + 26 : idx + 28], "big")
             mode_type = mode >> 12
             assert mode_type in [0b1000, 0b1010, 0b1110]
@@ -43,8 +42,6 @@ class IndexSerializer:
             gid = int.from_bytes(content[idx + 32 : idx + 36], "big")
             # Size
             fsize = int.from_bytes(content[idx + 36 : idx + 40], "big")
-            # SHA (object ID).  We'll store it as a lowercase hex string
-            # for consistency.
             sha = Sha(
                 format(int.from_bytes(content[idx + 40 : idx + 60], "big"), "040x")
             )
@@ -71,10 +68,6 @@ class IndexSerializer:
                 raw_name = content[idx : idx + name_length]
                 idx += name_length + 1
             else:
-                print("Notice: Name is 0x{:X} bytes long.".format(name_length))
-                # This probably wasn't tested enough.  It works with a
-                # path of exactly 0xFFF bytes.  Any extra bytes broke
-                # something between git, my shell and my filesystem.
                 null_idx = content.find(b"\x00", idx + 0xFFF)
                 raw_name = content[idx:null_idx]
                 idx = null_idx + 1
@@ -83,13 +76,12 @@ class IndexSerializer:
             name = raw_name.decode("utf8")
             idx = 8 * math.ceil(idx / 8)
 
-            # And we add this entry to our list.
             entries.append(
                 IndexEntry(
                     ctime=(ctime_s, ctime_ns),
                     mtime=(mtime_s, mtime_ns),
                     dev=dev,
-                    ino=ino,
+                    inode=inode,
                     mode_type=mode_type,
                     mode_perms=mode_perms,
                     uid=uid,
@@ -106,14 +98,9 @@ class IndexSerializer:
     @staticmethod
     def serialize(index: Index) -> bytes:
         dst = b""
-        # Write the magic bytes.
         dst += b"DIRC"
-        # Write version number.
         dst += index.version.to_bytes(4, "big")
-        # Write the number of entries.
         dst += len(index.entries).to_bytes(4, "big")
-
-        # ENTRIES
 
         idx = 0
         sorted_entries = sorted(index.entries, key=lambda e: e.path)
@@ -125,9 +112,8 @@ class IndexSerializer:
             dst += e.mtime[0].to_bytes(4, "big")
             dst += e.mtime[1].to_bytes(4, "big")
             dst += e.dev.to_bytes(4, "big")
-            dst += e.ino.to_bytes(4, "big")
+            dst += e.inode.to_bytes(4, "big")
 
-            # Mode
             mode = (e.mode_type << 12) | e.mode_perms
             dst += mode.to_bytes(4, "big")
 
@@ -135,7 +121,6 @@ class IndexSerializer:
             dst += e.gid.to_bytes(4, "big")
 
             dst += e.fsize.to_bytes(4, "big")
-            # @umepon0626 Convert back to int.
             dst += int(e.sha.value, 16).to_bytes(20, "big")
 
             flag_assume_valid = 0x1 << 15 if e.flag_assume_valid else 0
@@ -148,7 +133,7 @@ class IndexSerializer:
                 name_length = bytes_len
 
             # We merge back three pieces of data (two flags and the
-            # length of the name) on the same two bytes.
+            # length of the name) on the same two byinode.
             dst += (flag_assume_valid | e.flag_stage | name_length).to_bytes(2, "big")
 
             # Write back the name, and a final 0x00.

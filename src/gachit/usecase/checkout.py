@@ -2,7 +2,10 @@ from pathlib import Path
 
 from gachit.domain.entity import Ref, Repository, Sha, Tree
 from gachit.domain.service.diff.tree_to_tree import TreeDiffService
-from gachit.domain.service.migrate import MigrationService
+from gachit.domain.service.migrate import (
+    MigrationIndexService,
+    MigrationWorkspaceService,
+)
 from gachit.io.database.commit import CommitIO
 from gachit.io.database.tree import TreeIO
 from gachit.io.ref import BranchIO, HeadIO
@@ -31,8 +34,13 @@ def checkout_use_case(branch_name: str, repository_root_dir: Path = Path(".")) -
     tree_diff_service = TreeDiffService(current_tree, target_tree)
     tree_diff_service.compare()
 
-    migration_service = MigrationService(tree_diff_service.diff, repo=repo)
-    migration_service.migrate()
+    migration_workspace_service = MigrationWorkspaceService(
+        tree_diff_service.diff, repo=repo
+    )
+    migration_workspace_service.migrate()
+
+    migration_index_service = MigrationIndexService(tree_diff_service.diff, repo=repo)
+    migration_index_service.migrate()
 
     new_branch_ref = Ref(branch_name, current_commit_ref.sha)
     head_io.write(new_branch_ref)

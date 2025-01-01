@@ -15,9 +15,7 @@ class ConflictError(Exception):
 
 
 @dataclass
-class MigrationService:
-    # TODO: Separate this class into two classes:
-    # MigrateWorkspaceService and MigrationIndexService ?
+class MigrationWorkspaceService:
     diff: TreeDiff
     repo: Repository
 
@@ -25,7 +23,6 @@ class MigrationService:
         self.workspace = Workspace(self.repo.git_dir.parent)
         self.blob_io = BlobIO(self.repo.git_dir)
         self.index_io = IndexIO(self.repo.git_dir)
-        self.index = self.index_io.read()
 
     def check_conflicts(self) -> None:
         index = self.index_io.read()
@@ -33,7 +30,6 @@ class MigrationService:
         workspace_to_index_diff_service = WorkspaceToIndexDiffService(
             self.workspace, index
         )
-        index_to_tree_diff_service = IndexToTreeDiffService(index, self.diff.before)
 
         for path in self.diff.blob_diffs.keys():
             conflict_between_workspace_and_index = (
@@ -45,6 +41,36 @@ class MigrationService:
             ):
                 raise ConflictError(f"Conflict between workspace and index: {path}")
 
+    def update_workspace(self) -> None:
+        for path, blob_diff in self.diff.blob_diffs.items():
+            if blob_diff.after is None:
+                self.workspace.delete_file(path)
+            else:
+                blob = self.blob_io.get(blob_diff.after)
+                updated_file_content = blob.data
+                self.workspace.write_file(path, updated_file_content, exist_ok=True)
+
+    def migrate(self) -> None:
+        self.check_conflicts()
+        self.update_workspace()
+
+
+@dataclass
+class MigrationIndexService:
+    diff: TreeDiff
+    repo: Repository
+
+    def __post_init__(self) -> None:
+        self.workspace = Workspace(self.repo.git_dir.parent)
+        self.index_io = IndexIO(self.repo.git_dir)
+        self.index = self.index_io.read()
+
+    def check_conflicts(self) -> None:
+        index_to_tree_diff_service = IndexToTreeDiffService(
+            self.index, self.diff.before
+        )
+
+        for path in self.diff.blob_diffs.keys():
             conflict_between_index_and_tree = index_to_tree_diff_service.check_one(path)
 
             if (
@@ -56,15 +82,6 @@ class MigrationService:
                     f"between index and tree: {path}"
                 )
 
-    def update_workspace(self) -> None:
-        for path, blob_diff in self.diff.blob_diffs.items():
-            if blob_diff.after is None:
-                self.workspace.delete_file(path)
-            else:
-                blob = self.blob_io.get(blob_diff.after)
-                updated_file_content = blob.data
-                self.workspace.write_file(path, updated_file_content, exist_ok=True)
-
     def update_index(self) -> None:
         for path, blob_diff in self.diff.blob_diffs.items():
             if blob_diff.after is None:
@@ -74,16 +91,6 @@ class MigrationService:
                 self.index.entries.append(index_entry)
         self.index_io.write(self.index)
 
-    def rollback_workspace(self) -> None:
-        for path, blob_diff in self.diff.blob_diffs.items():
-            if blob_diff.before is None:
-                self.workspace.delete_file(path)
-            else:
-                blob = self.blob_io.get(blob_diff.before)
-                original_file_content = blob.data
-                self.workspace.write_file(path, original_file_content, exist_ok=True)
-
     def migrate(self) -> None:
         self.check_conflicts()
-        self.update_workspace()
         self.update_index()

@@ -23,6 +23,6 @@ def add_use_case(path: Path, repository_root_dir: Path = Path(".")) -> None:
     # build index entry
     index_entry = workspace.create_index_entry(path, sha)
     # Add index entry to index
-    index.entries.append(index_entry)
+    index.add_or_update_entry(index_entry)
     # save index to index file
     index_io.write(index)

@@ -1,22 +1,13 @@
 from pathlib import Path
 
-from gachit.domain.entity import Ref, Repository, Sha, Tree
+from gachit.domain.entity import Ref, Repository
+from gachit.domain.service.commit_tree import get_commit_tree
 from gachit.domain.service.diff.tree_to_tree import TreeDiffService
 from gachit.domain.service.migrate import (
     MigrationIndexService,
     MigrationWorkspaceService,
 )
-from gachit.io.database.commit import CommitIO
-from gachit.io.database.tree import TreeIO
 from gachit.io.ref import BranchIO, HeadIO
-
-
-def get_commit_tree(git_dir: Path, commit_sha: Sha) -> Tree:
-    commit_io = CommitIO(git_dir)
-    tree_io = TreeIO(git_dir)
-    commit = commit_io.get(commit_sha)
-    tree = tree_io.get(commit.tree)
-    return tree
 
 
 def checkout_use_case(branch_name: str, repository_root_dir: Path = Path(".")) -> None:

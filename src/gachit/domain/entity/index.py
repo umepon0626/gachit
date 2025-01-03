@@ -64,3 +64,14 @@ class Index:
             if e.path == path:
                 return e
         return None
+
+    def add_or_update_entry(self, entry: IndexEntry) -> None:
+        """Add entry
+
+        Args:
+            entry (IndexEntry): Index entry
+        """
+        existed_entry = self.find_entry(entry.path)
+        if existed_entry is not None:
+            self.entries.remove(existed_entry)
+        self.entries.append(entry)

@@ -88,7 +88,8 @@ class MigrationIndexService:
                 self.index.remove_entry(path)
             else:
                 index_entry = self.workspace.create_index_entry(path, blob_diff.after)
-                self.index.entries.append(index_entry)
+                self.index.add_or_update_entry(index_entry)
+
         self.index_io.write(self.index)
 
     def migrate(self) -> None:

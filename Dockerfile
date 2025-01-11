@@ -15,11 +15,14 @@ ENV PATH="${RYE_HOME}/shims:${PATH}"
 
 
 # 動作検証用のディレクトリの作成
-RUN git clone https://github.com/umepon0626/gachit_practice.git playground
+COPY ./playground /workspace/playground
 WORKDIR /workspace/playground
-RUN mv .git/objects/pack/*.pack . && \
-  cat *.pack | git unpack-objects && \
-  rm *.pack
+RUN git init && \
+  git config user.email "git@example.com" && \
+  git config user.name "test" && \
+  git add . && \
+  git commit -m "Initial commit"
+
 WORKDIR /workspace
 
 RUN mkdir -p /workspace/gachit

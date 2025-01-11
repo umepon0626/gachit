@@ -1,9 +1,10 @@
 from pathlib import Path
 
 import pytest
+from git import Repo
+
 from gachit.domain.service.migrate import ConflictError
 from gachit.usecase.checkout import checkout_use_case
-from git import Repo
 
 playground_path = Path("/workspace/playground")
 main_py = playground_path / Path("main.py")
@@ -27,7 +28,7 @@ def setup() -> None:
 
 def test_checkout_without_conflict() -> None:
     setup()
-    original_branch = "main"
+    original_branch = "master"
     checkout_use_case(original_branch, repository_root_dir=playground_path)
     repo = Repo(playground_path)
     assert repo.active_branch.name == original_branch
@@ -39,7 +40,7 @@ def test_checkout_with_conflict_workspace() -> None:
     setup()
     with open(main_py, "w") as f:
         f.write("print('This is main.py')")
-    original_branch = "main"
+    original_branch = "master"
     with pytest.raises(ConflictError):
         checkout_use_case(original_branch, repository_root_dir=playground_path)
 
@@ -50,6 +51,6 @@ def test_checkout_with_conflict_index() -> None:
         f.write("print('This is main.py')")
     repo = Repo(playground_path)
     repo.git.add(str(main_py))
-    original_branch = "main"
+    original_branch = "master"
     with pytest.raises(ConflictError):
         checkout_use_case(original_branch, repository_root_dir=playground_path)

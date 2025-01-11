@@ -7,7 +7,7 @@ from gachit.usecase.merge import merge_use_case
 """
 This test file checks following use case:
 
-(main)       A -> B -> M 
+(master)     A -> B -> M 
               \      /
 (new branch)   C ---・
 
@@ -50,9 +50,9 @@ def test_basic_merge() -> None:
     repo.git.commit("-m", "Commit C: update hoge.txt")
 
     # Make a commit `B`
-    # check out to main branch
-    main = repo.heads.main
-    main.checkout()
+    # check out to master branch
+    master = repo.heads.master
+    master.checkout()
 
     # write `3` to `fuga.txt`
     with open(fuga, "w") as f:
@@ -62,7 +62,7 @@ def test_basic_merge() -> None:
     repo.git.commit("-m", "Commit B: update fuga.txt")
 
     # Merge `C` into `B`
-    merge_use_case(new_branch, "main", repository_root_dir=playground_path)
+    merge_use_case(new_branch, "master", repository_root_dir=playground_path)
 
     # Check the result
     with open(hoge, "r") as f:

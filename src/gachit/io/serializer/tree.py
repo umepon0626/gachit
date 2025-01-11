@@ -6,8 +6,8 @@ from gachit.io.database import DataBase, ObjectHeader
 
 
 class TreeSerializer:
-    @staticmethod
-    def deserialize(data: bytes, db: DataBase) -> Tree:
+    @classmethod
+    def deserialize(cls, data: bytes, db: DataBase) -> Tree:
         """Deserialize tree object from bytes data.
 
         Args:
@@ -20,7 +20,7 @@ class TreeSerializer:
         length = len(data)
         root_tree = Tree()
         while pos < length:
-            leaf, pos = parse_one_tree(data, pos)
+            leaf, pos = cls.__parse_one_tree(data, pos)
             if leaf.mode == Mode.DIRECTORY:
                 _, sub_tree_body = db.read_object(leaf.sha)
                 sub_tree = TreeSerializer.deserialize(sub_tree_body, db)
@@ -29,10 +29,10 @@ class TreeSerializer:
                 root_tree.add_entry(leaf)
         return root_tree
 
-    @staticmethod
-    def serialize(tree: Tree) -> bytes:
+    @classmethod
+    def serialize(cls, tree: Tree) -> bytes:
         ret = b""
-        for entry in sorted(tree.entries.values(), key=tree_leaf_sort_key):
+        for entry in sorted(tree.entries.values(), key=cls.__tree_leaf_sort_key):
             if isinstance(entry, Tree):
                 mode = Mode.DIRECTORY
                 data_body = TreeSerializer.serialize(entry)
@@ -56,28 +56,28 @@ class TreeSerializer:
             )
         return ret
 
+    @classmethod
+    def __tree_leaf_sort_key(cls, entry: TreeLeaf | Tree) -> str:
+        if isinstance(entry, TreeLeaf):
+            return str(entry.path)
+        # We have to distinguish directories from files.
+        # We can do this by adding a slash to the end of the directory name.
+        return str(entry.path) + "/"
 
-def tree_leaf_sort_key(entry: TreeLeaf | Tree) -> str:
-    if isinstance(entry, TreeLeaf):
-        return str(entry.path)
-    # We have to distinguish directories from files.
-    # We can do this by adding a slash to the end of the directory name.
-    return str(entry.path) + "/"
+    @classmethod
+    def __parse_one_tree(cls, data: bytes, pos: int) -> tuple[TreeLeaf, int]:
+        """Parse one tree entry from data.
 
+        Args:
+            data (bytes): tree data.
+            pos (int): current position.
 
-def parse_one_tree(data: bytes, pos: int) -> tuple[TreeLeaf, int]:
-    """Parse one tree entry from data.
-
-    Args:
-        data (bytes): tree data.
-        pos (int): current position.
-
-    Returns:
-        tuple[TreeLeaf, int]: tree entry and next position.
-    """
-    mode_end = data.find(b" ", pos)
-    mode = Mode(data[pos:mode_end].decode("ascii"))
-    name_end = data.find(b"\x00", mode_end)
-    name = data[mode_end + 1 : name_end].decode("ascii")
-    sha = Sha(data[name_end + 1 : name_end + 21].hex())
-    return TreeLeaf(mode, Path(name), sha), name_end + 21
+        Returns:
+            tuple[TreeLeaf, int]: tree entry and next position.
+        """
+        mode_end = data.find(b" ", pos)
+        mode = Mode(data[pos:mode_end].decode("ascii"))
+        name_end = data.find(b"\x00", mode_end)
+        name = data[mode_end + 1 : name_end].decode("ascii")
+        sha = Sha(data[name_end + 1 : name_end + 21].hex())
+        return TreeLeaf(mode, Path(name), sha), name_end + 21

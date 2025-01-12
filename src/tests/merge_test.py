@@ -1,8 +1,7 @@
 from pathlib import Path
 
-from git import Repo
-
 from gachit.usecase.merge import merge_use_case
+from git import Repo
 
 """
 This test file checks following use case:
@@ -32,9 +31,6 @@ def test_basic_merge() -> None:
 
     repo.git.add(".")
     repo.git.commit("-m", "Commit A: add hoge.txt and fuga.txt")
-
-    commits = list(repo.iter_commits())
-    original_commit_num = len(commits)
 
     # Make a commit `C`
     # check out to new branch

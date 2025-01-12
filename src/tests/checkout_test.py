@@ -1,10 +1,9 @@
 from pathlib import Path
 
 import pytest
-from git import Repo
-
 from gachit.domain.service.migrate import ConflictError
 from gachit.usecase.checkout import checkout_use_case
+from git import Repo
 
 playground_path = Path("/workspace/playground")
 main_py = playground_path / Path("main.py")

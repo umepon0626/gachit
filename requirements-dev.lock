@@ -7,6 +7,7 @@
 #   all-features: false
 #   with-sources: false
 #   generate-hashes: false
+#   universal: false
 
 -e file:.
 cfgv==3.4.0
@@ -35,7 +36,7 @@ platformdirs==4.2.2
     # via virtualenv
 pluggy==1.5.0
     # via pytest
-pre-commit==3.8.0
+pre-commit==4.0.1
 pytest==8.3.2
     # via pytest-mock
 pytest-mock==3.14.0

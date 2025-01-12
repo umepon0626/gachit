@@ -1,17 +1,18 @@
+volumes:
+  gachit:
 services:
   test_env:
     build:
       context: .
     volumes:
-      - ./src:/workspace/gachit/src
-      - ./.gitignore:/workspace/gachit/.gitignore
-      - ./.python-version:/workspace/gachit/.python-version
-      - ./pyproject.toml:/workspace/gachit/pyproject.toml
-      - ./README.md:/workspace/gachit/README.md
-      - ./requirements.lock:/workspace/gachit/requirements.lock
-      - ./requirements-dev.lock:/workspace/gachit/requirements-dev.lock
-    command: bash -c ". .venv/bin/activate && rye sync --no-lock && rye run pytest -svv --doctest-modules"
+      - .:/workspace/gachit
+      - gachit:/workspace/gachit/.venv
+    command: bash -c ". .venv/bin/activate && \
+      rye sync --no-lock && \
+      pre-commit run --all-files && \
+      pytest -svv --doctest-modules"
     environment:
       - IS_TEST_ENV=1
       - GIT_USER_NAME="test user"
       - GIT_USER_EMAIL="test@gmail.com"
+    working_dir: /workspace/gachit

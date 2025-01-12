@@ -1,10 +1,10 @@
+import zlib
 from pathlib import Path
 
 from gachit.domain.entity import Sha
 
+from .error import InvalidObjectFormatError
 from .object_header import ObjectHeader
-from .read_object import read_object
-from .write_object import write_object
 
 
 class DataBase:
@@ -12,9 +12,25 @@ class DataBase:
         self.git_dir = git_dir
 
     def read_object(self, sha: Sha) -> tuple[ObjectHeader, bytes]:
-        return read_object(self.git_dir / "objects" / sha.value[:2] / sha.value[2:])
+        file_path = self.git_dir / "objects" / sha.value[:2] / sha.value[2:]
+        if not file_path.exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
+        with open(file_path, "rb") as f:
+            raw = zlib.decompress(f.read())
+
+        null_byte_end = raw.find(b"\x00")
+        header = ObjectHeader.from_data(raw[: null_byte_end + 1])
+
+        if header.content_size != len(raw) - null_byte_end - 1:
+            raise InvalidObjectFormatError(f"Malformed object {file_path}")
+
+        return header, raw[null_byte_end + 1 :]
 
     def write_object(
         self, header: ObjectHeader, data: bytes, sha: Sha, exist_ok: bool = True
     ) -> None:
-        return write_object(header, data, sha, self.git_dir / "objects", exist_ok)
+        object_path = self.git_dir / "objects" / sha.value[:2] / sha.value[2:]
+        if not exist_ok and object_path.exists():
+            raise FileExistsError(f"Object already exists: {object_path}")
+        object_path.parent.mkdir(parents=True, exist_ok=True)
+        object_path.write_bytes(zlib.compress(header.value + data))

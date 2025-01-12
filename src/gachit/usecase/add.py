@@ -7,8 +7,8 @@ from gachit.io.serializer import BlobSerializer
 from gachit.io.workspace import Workspace
 
 
-def add_use_case(path: Path, repository_root_dir: Path = Path(".")) -> None:
-    repo = Repository(repository_root_dir=repository_root_dir)
+def add_use_case(path: Path, current_dir: Path = Path(".")) -> None:
+    repo = Repository(current_dir=current_dir)
     workspace = Workspace(repo.repository_root_dir)
     index_io = IndexIO(repo.git_dir)
     blob_io = BlobIO(repo.git_dir)

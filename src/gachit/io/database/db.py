@@ -6,10 +6,6 @@ from gachit.domain.entity import Sha
 from .object_header import ObjectHeader
 
 
-class InvalidObjectFormatError(Exception):
-    pass
-
-
 class DataBase:
     def __init__(self, git_dir: Path) -> None:
         self.git_dir = git_dir
@@ -25,7 +21,7 @@ class DataBase:
         header = ObjectHeader.from_data(raw[: null_byte_end + 1])
 
         if header.content_size != len(raw) - null_byte_end - 1:
-            raise InvalidObjectFormatError(f"Malformed object {file_path}")
+            raise ValueError(f"Malformed object {file_path}")
 
         return header, raw[null_byte_end + 1 :]
 

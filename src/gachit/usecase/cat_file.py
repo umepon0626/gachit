@@ -6,9 +6,9 @@ from gachit.io.serializer import BlobSerializer, CommitSerializer, TreeSerialize
 
 
 def cat_file_use_case(
-    sha_str: str, repository_root_dir: Path = Path(".")
+    sha_str: str, current_dir: Path = Path(".")
 ) -> Blob | Tree | Commit:
-    repo = Repository(repository_root_dir=repository_root_dir)
+    repo = Repository(current_dir=current_dir)
     db = DataBase(repo.git_dir)
     sha = Sha(sha_str)
     header, body = db.read_object(sha)

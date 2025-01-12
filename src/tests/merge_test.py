@@ -58,7 +58,7 @@ def test_basic_merge() -> None:
     repo.git.commit("-m", "Commit B: update fuga.txt")
 
     # Merge `C` into `B`
-    merge_use_case(new_branch, "master", repository_root_dir=playground_path)
+    merge_use_case(new_branch, "master", current_dir=playground_path)
 
     # Check the result
     with open(hoge, "r") as f:

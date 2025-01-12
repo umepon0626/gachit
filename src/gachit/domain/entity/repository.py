@@ -9,8 +9,8 @@ class Repository:
     repository_root_dir: Path
     git_dir: Path
 
-    def __init__(self, repository_root_dir: Path = Path.cwd()):
-        self.repository_root_dir = self.__get_repository_root(repository_root_dir)
+    def __init__(self, current_dir: Path = Path.cwd()):
+        self.repository_root_dir = self.__get_repository_root(current_dir)
         self.git_dir = self.repository_root_dir / ".git"
 
     def __get_repository_root(self, path: Path) -> Path:

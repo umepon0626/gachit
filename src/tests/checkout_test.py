@@ -28,7 +28,7 @@ def setup() -> None:
 def test_checkout_without_conflict() -> None:
     setup()
     original_branch = "master"
-    checkout_use_case(original_branch, repository_root_dir=playground_path)
+    checkout_use_case(original_branch, current_dir=playground_path)
     repo = Repo(playground_path)
     assert repo.active_branch.name == original_branch
     assert not test_py.exists()
@@ -41,7 +41,7 @@ def test_checkout_with_conflict_workspace() -> None:
         f.write("print('This is main.py')")
     original_branch = "master"
     with pytest.raises(ConflictError):
-        checkout_use_case(original_branch, repository_root_dir=playground_path)
+        checkout_use_case(original_branch, current_dir=playground_path)
 
 
 def test_checkout_with_conflict_index() -> None:
@@ -52,4 +52,4 @@ def test_checkout_with_conflict_index() -> None:
     repo.git.add(str(main_py))
     original_branch = "master"
     with pytest.raises(ConflictError):
-        checkout_use_case(original_branch, repository_root_dir=playground_path)
+        checkout_use_case(original_branch, current_dir=playground_path)

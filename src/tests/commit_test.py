@@ -17,7 +17,7 @@ def test_commit() -> None:
         f.write("test\n")
 
     repo.git.add(str(p))
-    commit_use_case("add test.txt", repository_root_dir=playground_path)
+    commit_use_case("add test.txt", current_dir=playground_path)
 
     repo.index.commit("add test.txt")
 

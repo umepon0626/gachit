@@ -12,6 +12,6 @@ def test_add() -> None:
     with open(p, "w") as f:
         f.write("test\n")
 
-    add_use_case(p, repository_root_dir=playground_path)
+    add_use_case(p, current_dir=playground_path)
     repo.git.commit(str(playground_path), "-n", "-m", "'add test.txt'")
     assert repo.head.commit.tree["test.txt"].data_stream.read() == b"test\n"

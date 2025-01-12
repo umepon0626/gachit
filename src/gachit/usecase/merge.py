@@ -16,8 +16,8 @@ from gachit.io.index import IndexIO
 from gachit.io.ref import BranchIO
 
 
-def merge_use_case(from_branch: str, to_branch: str, repository_root_dir: Path) -> None:
-    repo = Repository(repository_root_dir=repository_root_dir)
+def merge_use_case(from_branch: str, to_branch: str, current_dir: Path) -> None:
+    repo = Repository(current_dir=current_dir)
     branch_io = BranchIO(repo.git_dir)
     commit_io = CommitIO(repo.git_dir)
     tree_io = TreeIO(repo.git_dir)

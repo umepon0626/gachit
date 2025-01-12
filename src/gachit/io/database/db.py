@@ -3,8 +3,11 @@ from pathlib import Path
 
 from gachit.domain.entity import Sha
 
-from .error import InvalidObjectFormatError
 from .object_header import ObjectHeader
+
+
+class InvalidObjectFormatError(Exception):
+    pass
 
 
 class DataBase:

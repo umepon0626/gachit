@@ -75,3 +75,7 @@ class Index:
         if existed_entry is not None:
             self.entries.remove(existed_entry)
         self.entries.append(entry)
+
+        self.entries = sorted(self.entries, key=lambda e: e.path)
+        # NOTE: we have to sort Index entries.
+        # ref: https://git-scm.com/docs/index-format#_index_entry

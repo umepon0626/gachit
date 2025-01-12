@@ -103,10 +103,8 @@ class IndexSerializer:
         dst += len(index.entries).to_bytes(4, "big")
 
         idx = 0
-        sorted_entries = sorted(index.entries, key=lambda e: e.path)
-        # NOTE: we have to sort Index entries.
-        # ref: https://git-scm.com/docs/index-format#_index_entry
-        for e in sorted_entries:
+
+        for e in index.entries:
             dst += e.ctime[0].to_bytes(4, "big")
             dst += e.ctime[1].to_bytes(4, "big")
             dst += e.mtime[0].to_bytes(4, "big")

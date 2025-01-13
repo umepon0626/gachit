@@ -26,7 +26,7 @@ class TreeSerializer:
                 sub_tree = TreeSerializer.deserialize(sub_tree_body, db)
                 root_tree.entries[leaf.path.name] = sub_tree
             else:
-                root_tree.add_entry(leaf)
+                root_tree.entries[leaf.path.name] = leaf
         return root_tree
 
     @classmethod

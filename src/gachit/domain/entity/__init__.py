@@ -4,7 +4,7 @@ from .diff import BlobDiff, DiffType, TreeDiff
 from .index import Index, IndexEntry
 from .mode import Mode
 from .ref import Ref
-from .repository import Repository, RepositoryNotFoundError
+from .repository import Repository
 from .sha import Sha
 from .tree import Tree, TreeLeaf
 from .user import User
@@ -13,7 +13,6 @@ __all__ = [
     "Blob",
     "Sha",
     "Repository",
-    "RepositoryNotFoundError",
     "Tree",
     "TreeLeaf",
     "Mode",

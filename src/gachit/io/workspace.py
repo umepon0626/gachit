@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from gachit.domain.entity import IndexEntry, RepositoryNotFoundError, Sha
+from gachit.domain.entity import IndexEntry, Sha
 
 
 class Workspace:
@@ -16,7 +16,7 @@ class Workspace:
 
         parent = path.parent
         if parent == path:
-            raise RepositoryNotFoundError("Not a git repository")
+            raise FileNotFoundError("Not a git repository")
 
         return self.__get_workspace_root(parent)
 

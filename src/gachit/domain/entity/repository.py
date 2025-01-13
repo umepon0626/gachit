@@ -1,10 +1,6 @@
 from pathlib import Path
 
 
-class RepositoryNotFoundError(Exception):
-    pass
-
-
 class Repository:
     repository_root_dir: Path
     git_dir: Path
@@ -20,6 +16,6 @@ class Repository:
 
         parent = path.parent
         if parent == path:
-            raise RepositoryNotFoundError("Not a git repository")
+            raise FileNotFoundError("Not a git repository")
 
         return self.__get_repository_root(parent)

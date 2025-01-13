@@ -31,3 +31,7 @@ class ObjectHeader:
             else Commit,
             content_size=content_size,
         )
+
+
+# TODO: delete from_data method and use __init__ instead.
+# TODO: delete value property and use __bytes__ instead.

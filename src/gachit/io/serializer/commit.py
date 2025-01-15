@@ -14,11 +14,11 @@ class CommitSerializer:
         data += f"committer {commit.committer.name} <{commit.committer.email}> "
         data += f"{int(commit.committed_at.timestamp())} +0900\n"
         data += f"\n{commit.message}"
-        return data.encode("ascii")
+        return data.encode("utf-8")
 
     @staticmethod
     def deserialize(data: bytes) -> Commit:
-        lines = data.decode("ascii").splitlines()
+        lines = data.decode("utf-8").splitlines()  # split with newline.
         parents: list[Sha] = []
         tree: Sha | None = None
         author: User | None = None
@@ -48,8 +48,4 @@ class CommitSerializer:
             return Commit(
                 tree, parents, author, created_at, committer, committed_at, message
             )
-        raise InvalidCommitDataError(f"Invalid commit data: {data.decode('ascii')}")
-
-
-class InvalidCommitDataError(Exception):
-    pass
+        raise ValueError(f"Invalid commit data: {data.decode('ascii')}")

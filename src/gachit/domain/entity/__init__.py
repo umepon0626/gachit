@@ -6,7 +6,7 @@ from .mode import Mode
 from .ref import Ref
 from .repository import Repository
 from .sha import Sha
-from .tree import Tree, TreeLeaf
+from .tree import Tree, TreeLeaf, TreeShallow
 from .user import User
 
 __all__ = [
@@ -15,6 +15,7 @@ __all__ = [
     "Repository",
     "Tree",
     "TreeLeaf",
+    "TreeShallow",
     "Mode",
     "User",
     "Commit",

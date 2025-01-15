@@ -20,12 +20,17 @@ class TreeLeaf:
     path: Path
     sha: Sha
 
-    def __post__init__(self) -> None:
-        self.__validate_mode(self.mode)
 
-    def __validate_mode(self, mode: Mode) -> None:
-        if mode not in [Mode.FILE, Mode.EXECUTABLE]:
-            raise ValueError(f"Invalid mode: {mode}")
+@dataclass
+class TreeShallow:
+    """Tree shallow. This holds only the top level of the tree.
+
+    Args:
+        path (Path): Directory path.
+    """
+
+    format: ClassVar[str] = "tree"
+    entries: dict[str, TreeLeaf] = field(default_factory=dict)
 
 
 @dataclass

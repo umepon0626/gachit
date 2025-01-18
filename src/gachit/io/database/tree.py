@@ -19,6 +19,10 @@ class TreeIO:
         return TreeSerializer.deserialize(data, self.db)
 
     def write(self, tree: Tree) -> Sha:
+        for entry in tree.entries.values():
+            # save sub tree recursively
+            if isinstance(entry, Tree):
+                self.write(entry)
         tree_data = TreeSerializer.serialize(tree)
         tree_sha = hash_object_service(tree)
         header = ObjectHeader(Tree, len(tree_data))

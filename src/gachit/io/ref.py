@@ -3,10 +3,6 @@ from pathlib import Path
 from gachit.domain.entity import Ref, Sha
 
 
-class BranchIOError(Exception):
-    pass
-
-
 class BranchIO:
     def __init__(self, git_dir: Path):
         self.refs_dir = git_dir / "refs" / "heads"
@@ -14,7 +10,7 @@ class BranchIO:
     def read(self, name: str) -> Ref:
         ref_path = self.refs_dir / name
         if not ref_path.exists():
-            raise BranchIOError(f"Ref {name} does not exist.")
+            raise FileNotFoundError(f"Ref {name} does not exist.")
         with ref_path.open("r") as f:
             sha = Sha(f.read().strip())
         return Ref(name, sha)
@@ -34,7 +30,7 @@ class HeadIO:
         with self.head_file_path.open("r") as f:
             parse_result = f.read().split("heads/")
             if len(parse_result) != 2:
-                raise BranchIOError("HEAD file is not well formatted.")
+                raise ValueError("HEAD file is not well formatted.")
             ref_name = parse_result[1].strip()
             return self.ref_io.read(ref_name)
 

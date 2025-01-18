@@ -26,6 +26,6 @@ def format_commit(commit: Commit) -> str:
     formatted_str += f"author {commit.author.name} <{commit.author.email}> "
     formatted_str += f"{commit.created_at.timestamp()} +0900\n"
     formatted_str += f"committer {commit.committer.name} <{commit.committer.email}> "
-    formatted_str += f"{commit.committed_at.timestamp()} +0900\n"
-    formatted_str += f"\n{commit.message}"
+    formatted_str += f"{commit.committed_at.timestamp()} +0900\n\n"
+    formatted_str += f"{commit.message}"
     return formatted_str

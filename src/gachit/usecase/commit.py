@@ -11,7 +11,7 @@ from gachit.io.user import UserIO
 
 
 def commit_use_case(message: str, repository_root_dir: Path = Path(".")) -> None:
-    repo = Repository(repository_root_dir=repository_root_dir)
+    repo = Repository(repository_root_dir)
     commit_io = CommitIO(repo.git_dir)
     tree_io = TreeIO(repo.git_dir)
     index_io = IndexIO(repo.git_dir)

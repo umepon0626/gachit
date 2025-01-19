@@ -48,5 +48,5 @@ docker compose up --build
 ```plain-text
 workspace
 ├── gachit 
-└──  playground
+└── playground
 ```

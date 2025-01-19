@@ -3,7 +3,12 @@ from pathlib import Path
 import click
 
 from gachit.presentation import cat_file_presentation
-from gachit.usecase import add_use_case, cat_file_use_case, switch_use_case
+from gachit.usecase import (
+    add_use_case,
+    cat_file_use_case,
+    commit_use_case,
+    switch_use_case,
+)
 
 
 @click.group()
@@ -23,6 +28,14 @@ def cat_file(sha: str) -> int:
 @click.argument("path", type=Path, required=True)
 def add(path: Path) -> int:
     add_use_case(path)
+    return 0
+
+
+@main.command()
+@click.argument("message", type=str, required=True)
+def commit(message: str) -> int:
+    commit_use_case(message)
+    print(message)
     return 0
 
 

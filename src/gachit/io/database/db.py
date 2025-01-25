@@ -1,4 +1,5 @@
 import zlib
+from hashlib import sha1
 from pathlib import Path
 
 from gachit.domain.entity import Sha
@@ -26,12 +27,15 @@ class DataBase:
         return header, raw[null_byte_end + 1 :]
 
     def write_object(
-        self, header: ObjectHeader, data: bytes, sha: Sha, raise_on_exist: bool = True
-    ) -> None:
+        self, header: ObjectHeader, data: bytes, raise_on_exist: bool = True
+    ) -> Sha:
+        written_data = zlib.compress(header.value + data, zlib.Z_BEST_SPEED)
+        sha = Sha(sha1(written_data).hexdigest())
         object_path = self.git_dir / "objects" / sha.value[:2] / sha.value[2:]
         if object_path.exists():
             if raise_on_exist:
                 raise FileExistsError(f"Object already exists: {object_path}")
-            return
+            return sha
         object_path.parent.mkdir(parents=True, exist_ok=True)
-        object_path.write_bytes(zlib.compress(header.value + data))
+        object_path.write_bytes(written_data)
+        return sha

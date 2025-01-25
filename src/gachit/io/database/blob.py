@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from gachit.domain.entity import Blob, Sha
-from gachit.domain.service import hash_object_service
 from gachit.io.serializer import BlobSerializer
 
 from .db import DataBase
@@ -20,7 +19,5 @@ class BlobIO:
 
     def write(self, blob: Blob) -> Sha:
         blob_data = BlobSerializer.serialize(blob)
-        sha = hash_object_service(blob)
         header = ObjectHeader(Blob, len(blob_data))
-        self.db.write_object(header, blob_data, sha)
-        return sha
+        return self.db.write_object(header, blob_data)

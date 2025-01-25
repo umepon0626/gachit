@@ -6,6 +6,7 @@ from gachit.presentation import cat_file_presentation
 from gachit.usecase import (
     add_use_case,
     cat_file_use_case,
+    checkout_use_case,
     commit_use_case,
     switch_use_case,
 )
@@ -43,5 +44,13 @@ def commit(message: str) -> int:
 @click.argument("branch_name", type=str, required=True)
 def switch(branch_name: str) -> int:
     switch_use_case(branch_name)
+    print(f"Switched to branch {branch_name}.")
+    return 0
+
+
+@main.command()
+@click.argument("branch_name", type=str, required=True)
+def checkout(branch_name: str) -> int:
+    checkout_use_case(branch_name)
     print(f"Switched to branch {branch_name}.")
     return 0

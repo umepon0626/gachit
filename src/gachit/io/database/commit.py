@@ -1,4 +1,3 @@
-import hashlib
 from pathlib import Path
 
 from gachit.domain.entity import Commit, Sha
@@ -20,7 +19,5 @@ class CommitIO:
 
     def write(self, commit: Commit) -> Sha:
         commit_data = CommitSerializer.serialize(commit)
-        commit_sha = Sha(hashlib.sha1(commit_data).hexdigest())
         commit_header = ObjectHeader(Commit, len(commit_data))
-        self.db.write_object(commit_header, commit_data, commit_sha)
-        return commit_sha
+        return self.db.write_object(commit_header, commit_data)

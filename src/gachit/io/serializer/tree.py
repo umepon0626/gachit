@@ -45,7 +45,9 @@ class TreeShallowSerializer:
 
 class TreeSerializer:
     @classmethod
-    def deserialize(cls, data: bytes, db: DataBase) -> Tree:
+    def deserialize(
+        cls, data: bytes, db: DataBase, tree_root_dir: Path = Path(".")
+    ) -> Tree:
         """Deserialize tree object from bytes data.
 
         Args:
@@ -56,13 +58,16 @@ class TreeSerializer:
         """
         pos = 0
         length = len(data)
-        root_tree = Tree()
+        root_tree = Tree(path=tree_root_dir)
         while pos < length:
             leaf, pos = parse_one_tree(data, pos)
             if leaf.mode == Mode.DIRECTORY:
                 _, sub_tree_body = db.read_object(leaf.sha)
-                sub_tree = TreeSerializer.deserialize(sub_tree_body, db)
-                root_tree.entries[leaf.path.name] = sub_tree
+                sub_tree = TreeSerializer.deserialize(
+                    sub_tree_body, db, tree_root_dir=(tree_root_dir / leaf.path)
+                )
+                # We need to distinguish directories from files.
+                root_tree.entries[leaf.path.name + "/"] = sub_tree
             else:
                 root_tree.entries[leaf.path.name] = leaf
         return root_tree

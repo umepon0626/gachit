@@ -15,9 +15,9 @@ class UserIO:
         name = None
         email = None
         for line in lines:
-            if line.startswith("name"):
+            if line.startswith("\tname"):
                 name = line.split("=")[1].strip()
-            if line.startswith("email"):
+            if line.startswith("\temail"):
                 email = line.split("=")[1].strip()
 
         if name is None or email is None:

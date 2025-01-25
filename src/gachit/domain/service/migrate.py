@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from gachit.domain.entity import DiffType, Repository, TreeDiff
+from gachit.domain.entity import DiffType, Index, Repository, TreeDiff
 from gachit.domain.service.diff import (
     IndexToTreeDiffService,
     WorkspaceToIndexDiffService,
@@ -18,17 +18,15 @@ class ConflictError(Exception):
 class MigrationWorkspaceService:
     diff: TreeDiff
     repo: Repository
+    index: Index
 
     def __post_init__(self) -> None:
         self.workspace = Workspace(self.repo.git_dir.parent)
         self.blob_io = BlobIO(self.repo.git_dir)
-        self.index_io = IndexIO(self.repo.git_dir)
 
     def check_conflicts(self) -> None:
-        index = self.index_io.read()
-
         workspace_to_index_diff_service = WorkspaceToIndexDiffService(
-            self.workspace, index
+            self.workspace, self.index
         )
 
         for path in self.diff.blob_diffs.keys():
@@ -47,8 +45,7 @@ class MigrationWorkspaceService:
                 self.workspace.delete_file(path)
             else:
                 blob = self.blob_io.get(blob_diff.after)
-                updated_file_content = blob.data
-                self.workspace.write_file(path, updated_file_content, exist_ok=True)
+                self.workspace.write_file(path, blob.data, exist_ok=True)
 
     def migrate(self) -> None:
         self.check_conflicts()
@@ -59,11 +56,11 @@ class MigrationWorkspaceService:
 class MigrationIndexService:
     diff: TreeDiff
     repo: Repository
+    index: Index
 
     def __post_init__(self) -> None:
         self.workspace = Workspace(self.repo.git_dir.parent)
         self.index_io = IndexIO(self.repo.git_dir)
-        self.index = self.index_io.read()
 
     def check_conflicts(self) -> None:
         index_to_tree_diff_service = IndexToTreeDiffService(

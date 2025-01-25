@@ -21,6 +21,7 @@ def merge_use_case(from_branch: str, to_branch: str, current_dir: Path) -> None:
     branch_io = BranchIO(repo.git_dir)
     commit_io = CommitIO(repo.git_dir)
     tree_io = TreeIO(repo.git_dir)
+    index = IndexIO(repo.git_dir).read()
 
     from_commit_ref = branch_io.read(from_branch)
     to_commit_ref = branch_io.read(to_branch)
@@ -38,14 +39,17 @@ def merge_use_case(from_branch: str, to_branch: str, current_dir: Path) -> None:
     tree_diff_service.compare()
 
     migration_workspace_service = MigrationWorkspaceService(
-        tree_diff_service.diff, repo=repo
+        tree_diff_service.diff, repo=repo, index=index
     )
     migration_workspace_service.migrate()
 
-    migration_index_service = MigrationIndexService(tree_diff_service.diff, repo=repo)
+    migration_index_service = MigrationIndexService(
+        tree_diff_service.diff, repo=repo, index=index
+    )
     migration_index_service.migrate()
 
     # create merge commit
+    # load updated index again
     index = IndexIO(repo.git_dir).read()
     tree = build_tree_from_index(index)
     tree_sha = tree_io.write(tree)

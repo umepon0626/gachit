@@ -11,7 +11,7 @@ class ObjectHeader:
     @property
     def value(self) -> bytes:
         return (
-            self.object_type.format.encode("ascii")
+            self.object_type.format.encode()
             + b" "
             + str(self.content_size).encode()
             + b"\x00"

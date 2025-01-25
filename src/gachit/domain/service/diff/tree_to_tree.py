@@ -19,27 +19,26 @@ class TreeDiffService:
             same_after_entry = after.entries.get(name, None)
             if same_after_entry is None:
                 self.add_entry(before_entry, is_deleted=True)
+                return
+
+            if isinstance(before_entry, Tree) and isinstance(same_after_entry, Tree):
+                self.__compare_tree(before_entry, same_after_entry)
+
+            elif isinstance(before_entry, TreeLeaf) and isinstance(
+                same_after_entry, TreeLeaf
+            ):
+                if before_entry.sha != same_after_entry.sha:
+                    self.diff.blob_diffs[before.path / before_entry.path] = BlobDiff(
+                        before_entry.path, before_entry.sha, same_after_entry.sha
+                    )
             else:
-                if isinstance(before_entry, Tree) and isinstance(
-                    same_after_entry, Tree
-                ):
-                    self.__compare_tree(before_entry, same_after_entry)
+                self.add_entry(before_entry, is_deleted=True)
+                # This means that the types of two entries are different.
+                # ex) before_entry is Tree and same_after_entry is TreeLeaf and both
+                # have the same path.
 
-                elif isinstance(before_entry, TreeLeaf) and isinstance(
-                    same_after_entry, TreeLeaf
-                ):
-                    if before_entry.sha != same_after_entry.sha:
-                        self.diff.blob_diffs[before_entry.path] = BlobDiff(
-                            before_entry.path, before_entry.sha, same_after_entry.sha
-                        )
-                else:
-                    self.add_entry(before_entry, is_deleted=True)
-                    # This means that the types of two entries are different.
-                    # ex) before_entry is Tree and same_after_entry is TreeLeaf and both
-                    # have the same path.
-
-                    # In this case, we have to add before_entry as a deleted entry
-                    # and after entry as an added entry.
+                # In this case, we have to add before_entry as a deleted entry
+                # and after entry as an added entry.
 
     def collect_added_entries(self, before: Tree, after: Tree) -> None:
         for name, after_entry in after.entries.items():
@@ -73,15 +72,19 @@ class TreeDiffService:
                     self.add_entry(child, is_deleted=is_deleted)
                 else:
                     if is_deleted:
-                        self.diff.blob_diffs[child.path] = BlobDiff(
+                        self.diff.blob_diffs[entry.path / child.path] = BlobDiff(
                             child.path, child.sha, None
                         )
                     else:
-                        self.diff.blob_diffs[child.path] = BlobDiff(
+                        self.diff.blob_diffs[entry.path / child.path] = BlobDiff(
                             child.path, None, child.sha
                         )
         else:
             if is_deleted:
-                self.diff.blob_diffs[entry.path] = BlobDiff(entry.path, entry.sha, None)
+                self.diff.blob_diffs[entry.path / entry.path] = BlobDiff(
+                    entry.path, entry.sha, None
+                )
             else:
-                self.diff.blob_diffs[entry.path] = BlobDiff(entry.path, None, entry.sha)
+                self.diff.blob_diffs[entry.path / entry.path] = BlobDiff(
+                    entry.path, None, entry.sha
+                )

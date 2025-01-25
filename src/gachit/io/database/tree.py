@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from gachit.domain.entity import Sha, Tree
-from gachit.domain.service import hash_object_service
 from gachit.io.serializer import TreeSerializer
 
 from .db import DataBase
@@ -24,9 +23,7 @@ class TreeIO:
             if isinstance(entry, Tree):
                 self.write(entry)
         tree_data = TreeSerializer.serialize(tree)
-        tree_sha = hash_object_service(tree)
         header = ObjectHeader(Tree, len(tree_data))
-        self.db.write_object(
-            header, tree_data, tree_sha, raise_on_exist=False
+        return self.db.write_object(
+            header, tree_data, raise_on_exist=False
         )  # skip if already exists sub tree
-        return tree_sha

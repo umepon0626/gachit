@@ -13,8 +13,8 @@ class CommitSerializer:
         data += f"{int(commit.created_at.timestamp())} +0900\n"
         data += f"committer {commit.committer.name} <{commit.committer.email}> "
         data += f"{int(commit.committed_at.timestamp())} +0900\n"
-        data += f"\n{commit.message}"
-        return data.encode("utf-8")
+        data += f"\n{commit.message}\n"
+        return data.encode("ascii")
 
     @staticmethod
     def deserialize(data: bytes) -> Commit:

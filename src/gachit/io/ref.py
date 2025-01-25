@@ -18,7 +18,7 @@ class BranchIO:
     def write(self, ref: Ref) -> None:
         ref_path = self.refs_dir / ref.name
         with ref_path.open("w+") as f:
-            f.write(ref.sha.value)
+            f.write(ref.sha.value + "\n")
 
 
 class HeadIO:
@@ -36,4 +36,4 @@ class HeadIO:
 
     def write(self, ref: Ref) -> None:
         with self.head_file_path.open("w") as f:
-            f.write(f"ref: refs/heads/{ref.name}")
+            f.write(f"ref: refs/heads/{ref.name}\n")

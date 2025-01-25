@@ -26,5 +26,7 @@ class TreeIO:
         tree_data = TreeSerializer.serialize(tree)
         tree_sha = hash_object_service(tree)
         header = ObjectHeader(Tree, len(tree_data))
-        self.db.write_object(header, tree_data, tree_sha)
+        self.db.write_object(
+            header, tree_data, tree_sha, raise_on_exist=False
+        )  # skip if already exists sub tree
         return tree_sha

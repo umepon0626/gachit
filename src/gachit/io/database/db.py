@@ -26,10 +26,12 @@ class DataBase:
         return header, raw[null_byte_end + 1 :]
 
     def write_object(
-        self, header: ObjectHeader, data: bytes, sha: Sha, exist_ok: bool = True
+        self, header: ObjectHeader, data: bytes, sha: Sha, raise_on_exist: bool = True
     ) -> None:
         object_path = self.git_dir / "objects" / sha.value[:2] / sha.value[2:]
-        if not exist_ok and object_path.exists():
-            raise FileExistsError(f"Object already exists: {object_path}")
+        if object_path.exists():
+            if raise_on_exist:
+                raise FileExistsError(f"Object already exists: {object_path}")
+            return
         object_path.parent.mkdir(parents=True, exist_ok=True)
         object_path.write_bytes(zlib.compress(header.value + data))

@@ -28,8 +28,10 @@ class TreeDiffService:
                 same_after_entry, TreeLeaf
             ):
                 if before_entry.sha != same_after_entry.sha:
-                    self.diff.blob_diffs[before.path / before_entry.path] = BlobDiff(
-                        before_entry.path, before_entry.sha, same_after_entry.sha
+                    self.diff.blob_diffs[before.path / before_entry.path.name] = (
+                        BlobDiff(
+                            before_entry.path, before_entry.sha, same_after_entry.sha
+                        )
                     )
             else:
                 self.add_entry(before_entry, is_deleted=True)
@@ -72,19 +74,15 @@ class TreeDiffService:
                     self.add_entry(child, is_deleted=is_deleted)
                 else:
                     if is_deleted:
-                        self.diff.blob_diffs[entry.path / child.path] = BlobDiff(
+                        self.diff.blob_diffs[entry.path / child.path.name] = BlobDiff(
                             child.path, child.sha, None
                         )
                     else:
-                        self.diff.blob_diffs[entry.path / child.path] = BlobDiff(
+                        self.diff.blob_diffs[entry.path / child.path.name] = BlobDiff(
                             child.path, None, child.sha
                         )
         else:
             if is_deleted:
-                self.diff.blob_diffs[entry.path / entry.path] = BlobDiff(
-                    entry.path, entry.sha, None
-                )
+                self.diff.blob_diffs[entry.path] = BlobDiff(entry.path, entry.sha, None)
             else:
-                self.diff.blob_diffs[entry.path / entry.path] = BlobDiff(
-                    entry.path, None, entry.sha
-                )
+                self.diff.blob_diffs[entry.path] = BlobDiff(entry.path, None, entry.sha)

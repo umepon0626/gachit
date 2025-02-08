@@ -10,6 +10,11 @@ class ObjectHeader:
 
     @property
     def value(self) -> bytes:
+        """header bytes
+
+        Returns:
+            bytes: return `<object type> <content size>\x00`. \x00 stands for null byte
+        """
         return (
             self.object_type.format.encode()
             + b" "
@@ -19,10 +24,22 @@ class ObjectHeader:
 
     @classmethod
     def from_data(cls, data: bytes) -> "ObjectHeader":
-        header_end = data.find(b" ")
-        object_format = data[:header_end].decode("ascii")
-        null_byte_end = data.find(b"\x00", header_end)
-        content_size = int(data[header_end:null_byte_end].decode("ascii"))
+        """Create an ObjectHeader from data
+
+        Args:
+            data (bytes): `<object type> <content size>\x00` formatted bytes
+
+        Returns:
+            ObjectHeader: object header
+        """
+        # detect object type
+        object_type_end = data.find(b" ")
+        object_format = data[:object_type_end].decode("ascii")
+
+        # detect content size
+        header_end = data.find(b"\x00", object_type_end)
+        content_size = int(data[object_type_end:header_end].decode("ascii"))
+
         return cls(
             object_type=Blob
             if object_format == Blob.format
@@ -31,7 +48,3 @@ class ObjectHeader:
             else Commit,
             content_size=content_size,
         )
-
-
-# TODO: delete from_data method and use __init__ instead.
-# TODO: delete value property and use __bytes__ instead.

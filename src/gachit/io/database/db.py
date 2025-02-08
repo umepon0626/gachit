@@ -12,19 +12,38 @@ class DataBase:
         self.git_dir = git_dir
 
     def read_object(self, sha: Sha) -> tuple[ObjectHeader, bytes]:
+        """Read an object from the database
+
+        Args:
+            sha (Sha): object sha
+
+        Raises:
+            FileNotFoundError: if the object is not found
+            ValueError: if the object is malformed
+
+        Returns:
+            tuple[ObjectHeader, bytes]: object header and content
+        """
         file_path = self.git_dir / "objects" / sha.value[:2] / sha.value[2:]
+
+        # check if the file exists
         if not file_path.exists():
             raise FileNotFoundError(f"File not found: {file_path}")
+
+        # read the file and decompress it
         with open(file_path, "rb") as f:
             raw = zlib.decompress(f.read())
 
-        null_byte_end = raw.find(b"\x00")
-        header = ObjectHeader.from_data(raw[: null_byte_end + 1])
+        # find the end of the header
+        header_end = raw.find(b"\x00")
 
-        if header.content_size != len(raw) - null_byte_end - 1:
+        # parse the header
+        header = ObjectHeader.from_data(raw[: header_end + 1])
+
+        if header.content_size != len(raw) - header_end - 1:
             raise ValueError(f"Malformed object {file_path}")
 
-        return header, raw[null_byte_end + 1 :]
+        return header, raw[header_end + 1 :]
 
     def write_object(
         self, header: ObjectHeader, data: bytes, raise_on_exist: bool = True
